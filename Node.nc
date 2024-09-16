@@ -22,6 +22,9 @@ module Node{
    uses interface SimpleSend as Sender;
 
    uses interface CommandHandler;
+
+   uses interface NeighborDiscovery;
+   uses interface Flooding;
 }
 
 implementation{
