@@ -1,3 +1,6 @@
+#include "../../packet.h"
+#include "../../includes/channels.h"
+
 interface Flooding{
-    command void pass();
+    command error_t send(pack msg, uint16_t dest );
 }

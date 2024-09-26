@@ -1,7 +1,20 @@
+#include "../../includes/packet.h"
+#include "../../includes/sendInfo.h"
+#include "../../includes/channels.h"
+
 module NeighborDiscoveryP{
     provides interface NeighborDiscovery;
     // uses interface Timer<TMilli> as delayTimer;
+    uses interface Queue<sendInfo*>;
+    uses interface Pool<sendInfo>;
 
+    uses interface Timer<TMilli> as sendTimer;
+
+    uses interface Packet;
+    uses interface AMPacket;
+    uses interface AMSend;
+
+    uses interface Random;
 }
 
 implementation{
@@ -13,8 +26,7 @@ implementation{
 //     // call delayTimer.startPeriodic(START_DELAY * 1000);
 // }
 
-// even void delayTimer.fired(){
-    
+// event void delayTimer.fired(){
 //     // makePack()
 //     // call SimpleSend.send()
 //     // delayTimerSeq++
