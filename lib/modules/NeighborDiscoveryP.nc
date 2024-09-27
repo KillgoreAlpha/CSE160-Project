@@ -23,12 +23,13 @@ implementation{
     pack NEIGHBOR_REPLY_PACKET;
     int SEQUENCE_NUMBER = 0;
     command void NeighborDiscovery.start(){
-        call delayTimer.startPeriodic(TICKS * 3);
+        call delayTimer.startPeriodic(TICKS * 30);
     }
 
     event void delayTimer.fired(){
         uint8_t* PAYLOAD = "";
         uint8_t TTL = 1;
+        dbg(NEIGHBOR_CHANNEL, "NEIGBOR DISCOVERY SENT \n");
         makePack(&NEIGHBOR_DISCOVERY_PACKET, TOS_NODE_ID, AM_BROADCAST_ADDR, TTL, PROTOCOL_NEIGHBOR, SEQUENCE_NUMBER, PAYLOAD, 0);
         call Sender.send(NEIGHBOR_DISCOVERY_PACKET, AM_BROADCAST_ADDR);
         SEQUENCE_NUMBER++;
@@ -37,6 +38,7 @@ implementation{
     command void NeighborDiscovery.reply(pack* DISCOVERY_PACKET){
         uint8_t* PAYLOAD = "";
         uint8_t TTL = 1;
+        dbg(NEIGHBOR_CHANNEL, "NEIGBOR REPLY SENT \n");
         makePack(&DISCOVERY_PACKET, DISCOVERY_PACKET->src, AM_BROADCAST_ADDR, TTL, PROTOCOL_NEIGHBOR_REPLY, DISCOVERY_PACKET->seq, PAYLOAD, 0);
         call Sender.send(NEIGHBOR_REPLY_PACKET, NEIGHBOR_DISCOVERY_PACKET->src);
     }
@@ -45,11 +47,7 @@ implementation{
         
         int NEIGHBOR = NEIGHBOR_CONFIRMATION_PACKET->src;
 
+        dbg(NEIGHBOR_CHANNEL, "NEIGBOR REPLY RECIEVED \n");
     }
 
 }
-
-// command error_t Flooding.start(){
-//     call delayTimer.startOneShot(START_DELAY * 1000);
-//     // call delayTimer.startPeriodic(START_DELAY * 1000);
-// }
