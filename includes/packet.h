@@ -45,8 +45,8 @@ void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t
 	Package->src = src;
 	Package->dest = dest;
 	Package->TTL = TTL;
-	Package->seq = seq;
 	Package->protocol = protocol;
+	Package->seq = seq;
 	memcpy(Package->payload, payload, length);
 }
 
