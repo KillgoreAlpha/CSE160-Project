@@ -19,8 +19,8 @@ module NeighborDiscoveryP{
 }
 
 implementation{
-    pack NEIGHBOR_DISCOVERY_PACKET
-    pack NEIGHBOR_REPLY_PACKET
+    pack NEIGHBOR_DISCOVERY_PACKET;
+    pack NEIGHBOR_REPLY_PACKET;
     int SEQUENCE_NUMBER = 0;
     command void NeighborDiscovery.start(){
         call delayTimer.startPeriodic(TICKS * 3);
@@ -37,11 +37,15 @@ implementation{
     command void NeighborDiscovery.reply(pack* DISCOVERY_PACKET){
         uint8_t* PAYLOAD = "";
         uint8_t TTL = 1;
-        makePack(&NEIGHBOR_DISCOVERY_PACKET, DISCOVERY_PACKET->src, AM_BROADCAST_ADDR, TTL, PROTOCOL_NEIGHBOR_REPLY, DISCOVERY_PACKET->seq, PAYLOAD, 0);
-        call Sender.send(NEIGHBOR_DISCOVERY_PACKET, NEIGHBOR_DISCOVERY_PACKET->src);
+        makePack(&DISCOVERY_PACKET, DISCOVERY_PACKET->src, AM_BROADCAST_ADDR, TTL, PROTOCOL_NEIGHBOR_REPLY, DISCOVERY_PACKET->seq, PAYLOAD, 0);
+        call Sender.send(NEIGHBOR_REPLY_PACKET, NEIGHBOR_DISCOVERY_PACKET->src);
     }
 
+    command void NeighborDiscovery.getReply(pack* NEIGHBOR_CONFIRMATION_PACKET){
+        
+        int NEIGHBOR = NEIGHBOR_CONFIRMATION_PACKET->src;
 
+    }
 
 }
 
