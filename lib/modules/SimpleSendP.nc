@@ -10,8 +10,8 @@
 #include "../../includes/channels.h"
 
 generic module SimpleSendP(){
-    // provides shows the interface we are implementing. See lib/interface/SimpleSend.nc
-    // to see what funcitons we need to implement.
+   // provides shows the interface we are implementing. See lib/interface/SimpleSend.nc
+   // to see what funcitons we need to implement.
    provides interface SimpleSend;
 
    uses interface Queue<sendInfo*>;

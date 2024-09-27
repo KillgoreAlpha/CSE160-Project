@@ -5,7 +5,6 @@
  *
  */
 
-
 #include "../../includes/CommandMsg.h"
 #include "../../includes/command.h"
 #include "../../includes/channels.h"
@@ -15,10 +14,10 @@ configuration CommandHandlerC{
 }
 
 implementation{
-    components CommandHandlerP;
-    CommandHandler = CommandHandlerP;
-    components new AMReceiverC(AM_COMMANDMSG) as CommandReceive;
-    CommandHandlerP.Receive -> CommandReceive;
+   components CommandHandlerP;
+   CommandHandler = CommandHandlerP;
+   components new AMReceiverC(AM_COMMANDMSG) as CommandReceive;
+   CommandHandlerP.Receive -> CommandReceive;
 
    //Lists
    components new PoolC(message_t, 20);

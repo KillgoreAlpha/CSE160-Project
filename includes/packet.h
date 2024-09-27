@@ -15,6 +15,7 @@ enum{
 	MAX_TTL = 15
 };
 
+void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t Protocol, uint16_t seq, uint8_t *payload, uint8_t length);
 
 typedef nx_struct pack{
 	nx_uint16_t dest;
@@ -39,5 +40,14 @@ void logPack(pack *input){
 enum{
 	AM_PACK=6
 };
+
+void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t protocol, uint16_t seq, uint8_t* payload, uint8_t length){
+	Package->src = src;
+	Package->dest = dest;
+	Package->TTL = TTL;
+	Package->seq = seq;
+	Package->protocol = protocol;
+	memcpy(Package->payload, payload, length);
+}
 
 #endif

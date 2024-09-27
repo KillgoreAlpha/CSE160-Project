@@ -5,8 +5,8 @@ configuration FloodingC{
 }
 
 implementation{
-    components new FloodingP();
-    Flooding = FloodingP.Flooding;
+   components new FloodingP();
+   Flooding = FloodingP.Flooding;
 
    components new TimerMilliC() as sendTimer;
    components RandomC as Random;
