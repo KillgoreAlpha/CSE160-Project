@@ -2,5 +2,7 @@
 #include "../../includes/channels.h"
 
 interface Flooding{
-    command void send(pack msg, uint16_t dest );
+    command void newFlood(uint16_t TARGET);
+    command void forwardFlood(pack* FLOOD_PACKET);
+
 }

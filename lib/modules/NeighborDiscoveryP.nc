@@ -5,8 +5,9 @@
 
 module NeighborDiscoveryP {
     provides interface NeighborDiscovery;
-    uses interface Timer<TMilli> as delayTimer;
+    uses interface Timer<TMilli> as sendTimer;
     uses interface SimpleSend;
+    uses interface Packet;
     uses interface Hashmap<uint16_t> as SeqNoMap;
     uses interface Hashmap<neighbor_t> as NeighborMap;
 }
@@ -19,14 +20,16 @@ implementation {
     // Define a struct to store neighbor information
     typedef struct neighbor {
         uint16_t id;
-        uint32_t lastHeard;
+        uint16_t lastHeard;
+        uint16_t timeDown;
+
     } neighbor_t;
 
     command void NeighborDiscovery.start() {
-        call delayTimer.startPeriodic(TICKS * 30);
+        call sendTimer.startPeriodic(TICKS * 30);
     }
 
-    event void delayTimer.fired() {
+    event void sendTimer.fired() {
         uint8_t* PAYLOAD = "";
         uint8_t TTL = 1;
         dbg(NEIGHBOR_CHANNEL, "NEIGHBOR DISCOVERY SENT \n");
@@ -59,13 +62,13 @@ implementation {
     }
 
     command void NeighborDiscovery.getReply(pack* NEIGHBOR_REPLY_PACKET) {
-        nx_uint16_t NEIGHBOR_ID = NEIGHBOR_REPLY_PACKET->src;
+        uint16_t NEIGHBOR_ID = NEIGHBOR_REPLY_PACKET->src;
         dbg(NEIGHBOR_CHANNEL, "NEIGHBOR REPLY RECEIVED \n");
 
         // Update or insert neighbor information
         neighbor_t neighbor;
         neighbor.id = NEIGHBOR_ID;
-        neighbor.lastHeard = call Timer.getNow();
+        neighbor.lastHeard = NEIGHBOR_REPLY_PACKET->seq;
 
         call NeighborMap.insert(NEIGHBOR_ID, neighbor);
     }
