@@ -5,15 +5,10 @@
 
 generic module FloodingP(){
    provides interface Flooding;
+   uses interface Packet;
+   uses interface SimpleSend;
+   uses interface Timer<TMilli> as sendTimer;
 
-   uses interface Queue<sendInfo*>;
-   uses interface Pool<sendInfo>;
-
-    uses interface Timer<TMilli> as sendTimer;
-
-    uses interface Packet;
-    uses interface AMPacket;
-    uses interface AMSend;
 }
 
 implementation{
