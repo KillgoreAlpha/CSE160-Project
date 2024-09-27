@@ -35,7 +35,7 @@ implementation{
 
    event void Boot.booted(){
       call AMControl.start();
-
+      call NeighborDiscovery.start()
       dbg(GENERAL_CHANNEL, "Booted\n");
    }
 
@@ -55,6 +55,9 @@ implementation{
       if(len==sizeof(pack)){
          pack* myMsg=(pack*) payload;
          dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
+         switch(protocol) {
+            call NeighborDiscovery.reply()
+         }
          return msg;
       }
       dbg(GENERAL_CHANNEL, "Unknown Packet Type %d\n", len);
@@ -68,7 +71,10 @@ implementation{
       call Sender.send(sendPackage, destination);
    }
 
-   event void CommandHandler.printNeighbors(){}
+
+   event void CommandHandler.printNeighbors() {
+
+   }
 
    event void CommandHandler.printRouteTable(){}
 
