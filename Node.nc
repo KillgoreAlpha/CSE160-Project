@@ -55,8 +55,19 @@ implementation{
       if(len==sizeof(pack)){
          pack* myMsg=(pack*) payload;
          dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
-         switch(protocol) {
-            call NeighborDiscovery.reply()
+         nx_uint8_t myProtocol=myMsg->protocol;
+         switch(myProtocol){
+            case(PROTOCOL_NEIGHBOR_DISCOVERY):
+               // Add neighbor to neightbors
+
+               // Reply to Neighbor
+               call NeighborDiscovery.reply(myMsg);
+               break;
+            case(PROTOCOL_NEIGHBOR_REPLY):
+               // Read neighbor reply
+               call NeighborDiscovery.readDiscovery(myMsg);
+               // 
+               break;
          }
          return msg;
       }

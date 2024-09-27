@@ -44,10 +44,9 @@ implementation{
     }
 
     command void NeighborDiscovery.getReply(pack* NEIGHBOR_CONFIRMATION_PACKET){
-        
-        int NEIGHBOR = NEIGHBOR_CONFIRMATION_PACKET->src;
-
+        nx_uint16_t NEIGHBOR = NEIGHBOR_CONFIRMATION_PACKET->src;
         dbg(NEIGHBOR_CHANNEL, "NEIGBOR REPLY RECIEVED \n");
+
     }
 
 }
