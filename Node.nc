@@ -29,13 +29,18 @@ module Node{
 
 implementation{
    pack sendPackage;
+   uint8_t myProtocol;
+   uint8_t myTTL;
+   uint8_t mySrc;
+   uint8_t myDest;
+
 
    // // Prototypes
    // void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t Protocol, uint16_t seq, uint8_t *payload, uint8_t length);
 
    event void Boot.booted(){
       call AMControl.start();
-      call NeighborDiscovery.start()
+      call NeighborDiscovery.start();
       dbg(GENERAL_CHANNEL, "Booted\n");
    }
 
@@ -55,9 +60,11 @@ implementation{
       if(len==sizeof(pack)){
          pack* myMsg=(pack*) payload;
          dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
-         nx_uint8_t myProtocol=myMsg->protocol;
+         myProtocol = myMsg->protocol;
+
+
          switch(myProtocol){
-            case(PROTOCOL_NEIGHBOR_DISCOVERY):
+            case(PROTOCOL_NEIGHBOR):
                // Add neighbor to neightbors
 
                // Reply to Neighbor

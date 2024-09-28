@@ -5,4 +5,7 @@ configuration NeighborDiscoveryC{
 implementation{
     components NeighborDiscoveryP;
     NeighborDiscovery = NeighborDiscoveryP.NeighborDiscovery;
+
+    components new TimerMilliC() as sendTimer;
+    NeighborDiscoveryP.sendTimer -> sendTimer;
 }

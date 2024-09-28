@@ -6,7 +6,7 @@
 #define PACKET_H
 
 
-# include "protocol.h"
+#include "protocol.h"
 #include "channels.h"
 
 enum{
@@ -15,7 +15,6 @@ enum{
 	MAX_TTL = 15
 };
 
-void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t Protocol, uint16_t seq, uint8_t *payload, uint8_t length);
 
 typedef nx_struct pack{
 	nx_uint16_t dest;
@@ -35,7 +34,7 @@ typedef nx_struct pack{
 void logPack(pack *input){
 	dbg(GENERAL_CHANNEL, "Src: %hhu Dest: %hhu Seq: %hhu TTL: %hhu Protocol:%hhu  Payload: %s\n",
 	input->src, input->dest, input->seq, input->TTL, input->protocol, input->payload);
-}
+};
 
 enum{
 	AM_PACK=6
