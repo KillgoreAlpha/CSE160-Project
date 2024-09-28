@@ -3,33 +3,50 @@
 #include "../../includes/channels.h"
 #include "../../includes/protocol.h"
 
-module FloodingP{
-   provides interface Flooding;
-   uses interface Packet;
-   uses interface SimpleSend;
-//    uses interface Timer<TMilli> as sendTimer;
-
+module FloodingP {
+    provides interface Flooding;
+    uses interface Packet;
+    uses interface SimpleSend;
+    uses interface Hashmap<uint16_t> as SeenPackets;
 }
 
-implementation{
-    uint16_t SEQUENCE_NUMBER;
-    pack* FLOOD_PACKET;
+implementation {
+    uint16_t sequence_number = 0;
 
-    command void Flooding.newFlood(uint16_t TARGET){
+    command void Flooding.newFlood(uint16_t TARGET) {
+        pack packet;
         uint8_t TTL = MAX_TTL;
-        uint8_t* PAYLOAD = "";
-        // pack* FLOOD_PACKET;
-        dbg(FLOODING_CHANNEL, "NEW FLOOD SENT \n");
-        // makePack(&FLOOD_PACKET, TOS_NODE_ID, TARGET, TTL, PROTOCOL_FLOOD, SEQUENCE_NUMBER, PAYLOAD, 0);
-        // call SimpleSend.send(FLOOD_PACKET, AM_BROADCAST_ADDR);
+        uint8_t* payload = "";
+
+        dbg(FLOODING_CHANNEL, "Initiating new flood to node %d\n", TARGET);
+
+        makePack(&packet, TOS_NODE_ID, TARGET, TTL, PROTOCOL_FLOOD, sequence_number++, payload, PACKET_MAX_PAYLOAD_SIZE);
+        
+        call Flooding.forwardFlood(&packet);
     }
 
-    command void Flooding.forwardFlood(pack* FLOOD_PACKET){
-        uint8_t TTL = (FLOOD_PACKET->TTL) - 1;
-        uint8_t* PAYLOAD = "";
-        SEQUENCE_NUMBER = (FLOOD_PACKET->seq) + 1;
-        dbg(FLOODING_CHANNEL, "FLOOD PACKET RECIEVED \n");
-        // makePack(&FLOOD_PACKET, TOS_NODE_ID, FLOOD_PACKET->dest, TTL, PROTOCOL_FLOOD, SEQUENCE_NUMBER, PAYLOAD, 0);
-        // call SimpleSend.send(FLOOD_PACKET, AM_BROADCAST_ADDR);
-    }   
+    command void Flooding.forwardFlood(pack* packet) {
+        uint32_t packet_key = (uint32_t)packet->src << 16 | packet->seq;
+
+        if (packet->TTL == 0) {
+            dbg(FLOODING_CHANNEL, "Dropping packet, TTL expired\n");
+            return;
+        }
+
+        if (call SeenPackets.contains(packet_key)) {
+            dbg(FLOODING_CHANNEL, "Dropping duplicate flood packet\n");
+            return;
+        }
+
+        call SeenPackets.insert(packet_key, 1);
+
+        if (packet->dest == TOS_NODE_ID) {
+            dbg(FLOODING_CHANNEL, "Flood packet received at destination\n");
+            // Process the packet here
+        } else {
+            packet->TTL--;
+            dbg(FLOODING_CHANNEL, "Forwarding flood packet from %d to %d, TTL %d\n", packet->src, packet->dest, packet->TTL);
+            call SimpleSend.send(*packet, AM_BROADCAST_ADDR);
+        }
+    }
 }

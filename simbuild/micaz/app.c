@@ -797,7 +797,7 @@ extern void *malloc(size_t __size) __attribute((__leaf__)) __attribute((__nothro
 #line 483
 extern void free(void *__ptr) __attribute((__leaf__)) __attribute((__nothrow__)) ;
 #line 742
-typedef int (*__compar_fn_t)(const void *arg_0x7279bd09e020, const void *arg_0x7279bd09e320);
+typedef int (*__compar_fn_t)(const void *arg_0x735a4261e020, const void *arg_0x735a4261e320);
 #line 780
 __extension__ 
 #line 797
@@ -818,7 +818,7 @@ extern double fabs(double __x) __attribute((__leaf__)) __attribute((__nothrow__)
 
 extern double floor(double __x) __attribute((__leaf__)) __attribute((__nothrow__)) __attribute((const)) ;
 #line 250
-extern double erfc(double arg_0x7279bd0165e0) __attribute((__leaf__)) __attribute((__nothrow__)) ;
+extern double erfc(double arg_0x735a425965e0) __attribute((__leaf__)) __attribute((__nothrow__)) ;
 #line 326
 __extension__ 
 
@@ -1221,8 +1221,8 @@ typedef struct hashtable hashtable_t;
 #line 78
 struct hashtable *
 create_hashtable(unsigned int minsize, 
-unsigned int (*hashfunction)(void *arg_0x7279bcdb93a0), 
-int (*key_eq_fn)(void *arg_0x7279bcdb9b70, void *arg_0x7279bcdb9e30));
+unsigned int (*hashfunction)(void *arg_0x735a423393a0), 
+int (*key_eq_fn)(void *arg_0x735a42339b70, void *arg_0x735a42339e30));
 #line 103
 #line 102
 int 
@@ -1258,7 +1258,7 @@ typedef struct sim_log_channel {
 } sim_log_channel_t;
 
 enum __nesc_unnamed4272 {
-  SIM_LOG_OUTPUT_COUNT = 219U
+  SIM_LOG_OUTPUT_COUNT = 228U
 };
 
 sim_log_output_t outputs[SIM_LOG_OUTPUT_COUNT];
@@ -1838,7 +1838,7 @@ struct tm;
 
 struct tm;
 # 46 "/opt/tinyos-main/tos/lib/tossim/randomlib.h"
-static inline void RandomInitialise(int arg_0x7279bcba6c00, int arg_0x7279bcba6e80);
+static inline void RandomInitialise(int arg_0x735a42126c00, int arg_0x735a42126e80);
 static double RandomUniform(void );
 # 51 "/opt/tinyos-main/tos/lib/tossim/sim_noise.c"
 int numCase1 = 0;
@@ -4175,6 +4175,7 @@ typedef /*CommandHandlerC.PoolC*/PoolC__0__pool_t /*CommandHandlerC.PoolC.PoolP*
 typedef /*CommandHandlerC.PoolC.PoolP*/PoolP__1__pool_t /*CommandHandlerC.PoolC.PoolP*/PoolP__1__Pool__t;
 typedef message_t */*CommandHandlerC.QueueC*/QueueC__0__queue_t;
 typedef /*CommandHandlerC.QueueC*/QueueC__0__queue_t /*CommandHandlerC.QueueC*/QueueC__0__Queue__t;
+typedef uint16_t FloodingP__SeenPackets__t;
 typedef sendInfo /*FloodingC.SimpleSendC.SimpleSendP*/SimpleSendP__1__Pool__t;
 typedef sendInfo */*FloodingC.SimpleSendC.SimpleSendP*/SimpleSendP__1__Queue__t;
 typedef TMilli /*FloodingC.SimpleSendC.SimpleSendP*/SimpleSendP__1__sendTimer__precision_tag;
@@ -4183,6 +4184,8 @@ typedef /*FloodingC.SimpleSendC.PoolC*/PoolC__2__pool_t /*FloodingC.SimpleSendC.
 typedef /*FloodingC.SimpleSendC.PoolC.PoolP*/PoolP__2__pool_t /*FloodingC.SimpleSendC.PoolC.PoolP*/PoolP__2__Pool__t;
 typedef sendInfo */*FloodingC.SimpleSendC.QueueC*/QueueC__2__queue_t;
 typedef /*FloodingC.SimpleSendC.QueueC*/QueueC__2__queue_t /*FloodingC.SimpleSendC.QueueC*/QueueC__2__Queue__t;
+typedef uint16_t /*FloodingC.SeenPacketsC*/HashmapC__0__t;
+typedef /*FloodingC.SeenPacketsC*/HashmapC__0__t /*FloodingC.SeenPacketsC*/HashmapC__0__Hashmap__t;
 typedef uint16_t NeighborDiscoveryP__SeqNoMap__t;
 typedef TMilli NeighborDiscoveryP__sendTimer__precision_tag;
 typedef sendInfo /*NeighborDiscoveryC.SimpleSendC.SimpleSendP*/SimpleSendP__2__Pool__t;
@@ -4193,18 +4196,18 @@ typedef /*NeighborDiscoveryC.SimpleSendC.PoolC*/PoolC__3__pool_t /*NeighborDisco
 typedef /*NeighborDiscoveryC.SimpleSendC.PoolC.PoolP*/PoolP__3__pool_t /*NeighborDiscoveryC.SimpleSendC.PoolC.PoolP*/PoolP__3__Pool__t;
 typedef sendInfo */*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__queue_t;
 typedef /*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__queue_t /*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__Queue__t;
-typedef uint16_t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__t;
-typedef /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__Hashmap__t;
+typedef uint16_t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__t;
+typedef /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__Hashmap__t;
 # 62 "/opt/tinyos-main/tos/interfaces/Init.nc"
 static error_t PlatformC__Init__init(void );
 # 67 "/opt/tinyos-main/tos/interfaces/TaskBasic.nc"
 static error_t SimSchedulerBasicP__TaskBasic__postTask(
 # 49 "/opt/tinyos-main/tos/lib/tossim/SimSchedulerBasicP.nc"
-uint8_t arg_0x7279bca7a020);
+uint8_t arg_0x735a41ffa020);
 # 75 "/opt/tinyos-main/tos/interfaces/TaskBasic.nc"
 static void SimSchedulerBasicP__TaskBasic__default__runTask(
 # 49 "/opt/tinyos-main/tos/lib/tossim/SimSchedulerBasicP.nc"
-uint8_t arg_0x7279bca7a020);
+uint8_t arg_0x735a41ffa020);
 # 57 "/opt/tinyos-main/tos/interfaces/Scheduler.nc"
 static void SimSchedulerBasicP__Scheduler__init(void );
 
@@ -4247,7 +4250,7 @@ static long long int SimMoteP__SimMote__getStartTime(void );
 # 80 "/opt/tinyos-main/tos/interfaces/AMSend.nc"
 static error_t TossimActiveMessageC__AMSend__send(
 # 47 "/opt/tinyos-main/tos/lib/tossim/TossimActiveMessageC.nc"
-am_id_t arg_0x7279bc8abc70, 
+am_id_t arg_0x735a41e2bc70, 
 # 80 "/opt/tinyos-main/tos/interfaces/AMSend.nc"
 am_addr_t addr, 
 #line 71
@@ -4270,7 +4273,7 @@ message_t *
 
 TossimActiveMessageC__Snoop__default__receive(
 # 49 "/opt/tinyos-main/tos/lib/tossim/TossimActiveMessageC.nc"
-am_id_t arg_0x7279bc890a50, 
+am_id_t arg_0x735a41e10a50, 
 # 71 "/opt/tinyos-main/tos/interfaces/Receive.nc"
 message_t * msg, 
 void * payload, 
@@ -4317,7 +4320,7 @@ message_t *
 
 TossimActiveMessageC__Receive__default__receive(
 # 48 "/opt/tinyos-main/tos/lib/tossim/TossimActiveMessageC.nc"
-am_id_t arg_0x7279bc891e30, 
+am_id_t arg_0x735a41e11e30, 
 # 71 "/opt/tinyos-main/tos/interfaces/Receive.nc"
 message_t * msg, 
 void * payload, 
@@ -4538,15 +4541,15 @@ static void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC__0__TimerFrom__f
 #line 83
 static void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC__0__Timer__default__fired(
 # 48 "/opt/tinyos-main/tos/lib/timer/VirtualizeTimerC.nc"
-uint8_t arg_0x7279bc308950);
+uint8_t arg_0x735a41888950);
 # 92 "/opt/tinyos-main/tos/lib/timer/Timer.nc"
 static bool /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC__0__Timer__isRunning(
 # 48 "/opt/tinyos-main/tos/lib/timer/VirtualizeTimerC.nc"
-uint8_t arg_0x7279bc308950);
+uint8_t arg_0x735a41888950);
 # 64 "/opt/tinyos-main/tos/lib/timer/Timer.nc"
 static void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC__0__Timer__startPeriodic(
 # 48 "/opt/tinyos-main/tos/lib/timer/VirtualizeTimerC.nc"
-uint8_t arg_0x7279bc308950, 
+uint8_t arg_0x735a41888950, 
 # 64 "/opt/tinyos-main/tos/lib/timer/Timer.nc"
 uint32_t dt);
 
@@ -4559,7 +4562,7 @@ uint32_t dt);
 
 static void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC__0__Timer__startOneShot(
 # 48 "/opt/tinyos-main/tos/lib/timer/VirtualizeTimerC.nc"
-uint8_t arg_0x7279bc308950, 
+uint8_t arg_0x735a41888950, 
 # 73 "/opt/tinyos-main/tos/lib/timer/Timer.nc"
 uint32_t dt);
 # 82 "/opt/tinyos-main/tos/lib/timer/Counter.nc"
@@ -4594,7 +4597,7 @@ error_t error);
 # 110 "/opt/tinyos-main/tos/interfaces/AMSend.nc"
 static void /*AMQueueP.AMQueueImplP*/AMQueueImplP__0__AMSend__sendDone(
 # 48 "/opt/tinyos-main/tos/system/AMQueueImplP.nc"
-am_id_t arg_0x7279bc256b60, 
+am_id_t arg_0x735a417d6b60, 
 # 103 "/opt/tinyos-main/tos/interfaces/AMSend.nc"
 message_t * msg, 
 
@@ -4607,7 +4610,7 @@ error_t error);
 # 75 "/opt/tinyos-main/tos/interfaces/Send.nc"
 static error_t /*AMQueueP.AMQueueImplP*/AMQueueImplP__0__Send__send(
 # 46 "/opt/tinyos-main/tos/system/AMQueueImplP.nc"
-uint8_t arg_0x7279bc257940, 
+uint8_t arg_0x735a417d7940, 
 # 67 "/opt/tinyos-main/tos/interfaces/Send.nc"
 message_t * msg, 
 
@@ -4621,7 +4624,7 @@ uint8_t len);
 #line 100
 static void /*AMQueueP.AMQueueImplP*/AMQueueImplP__0__Send__default__sendDone(
 # 46 "/opt/tinyos-main/tos/system/AMQueueImplP.nc"
-uint8_t arg_0x7279bc257940, 
+uint8_t arg_0x735a417d7940, 
 # 96 "/opt/tinyos-main/tos/interfaces/Send.nc"
 message_t * msg, 
 
@@ -4875,12 +4878,12 @@ static bool /*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__Queue__empty(voi
 #line 65
 static uint8_t /*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__Queue__size(void );
 # 13 "dataStructures/interfaces/Hashmap.nc"
-static /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__Hashmap__t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__Hashmap__get(uint32_t key);
+static /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__Hashmap__t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__Hashmap__get(uint32_t key);
 #line 11
-static void /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__Hashmap__insert(uint32_t key, /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__Hashmap__t input);
+static void /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__Hashmap__insert(uint32_t key, /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__Hashmap__t input);
 
 
-static bool /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__Hashmap__contains(uint32_t key);
+static bool /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__Hashmap__contains(uint32_t key);
 # 45 "/opt/tinyos-main/tos/lib/tossim/PlatformC.nc"
 static inline error_t PlatformC__Init__init(void );
 # 62 "/opt/tinyos-main/tos/interfaces/Init.nc"
@@ -4904,7 +4907,7 @@ int sim_main_start_mote(void )   ;
 # 75 "/opt/tinyos-main/tos/interfaces/TaskBasic.nc"
 static void SimSchedulerBasicP__TaskBasic__runTask(
 # 49 "/opt/tinyos-main/tos/lib/tossim/SimSchedulerBasicP.nc"
-uint8_t arg_0x7279bca7a020);
+uint8_t arg_0x735a41ffa020);
 
 
 
@@ -5092,7 +5095,7 @@ static am_addr_t TossimActiveMessageC__amAddress(void );
 # 110 "/opt/tinyos-main/tos/interfaces/AMSend.nc"
 static void TossimActiveMessageC__AMSend__sendDone(
 # 47 "/opt/tinyos-main/tos/lib/tossim/TossimActiveMessageC.nc"
-am_id_t arg_0x7279bc8abc70, 
+am_id_t arg_0x735a41e2bc70, 
 # 103 "/opt/tinyos-main/tos/interfaces/AMSend.nc"
 message_t * msg, 
 
@@ -5111,7 +5114,7 @@ message_t *
 
 TossimActiveMessageC__Snoop__receive(
 # 49 "/opt/tinyos-main/tos/lib/tossim/TossimActiveMessageC.nc"
-am_id_t arg_0x7279bc890a50, 
+am_id_t arg_0x735a41e10a50, 
 # 71 "/opt/tinyos-main/tos/interfaces/Receive.nc"
 message_t * msg, 
 void * payload, 
@@ -5130,7 +5133,7 @@ message_t *
 
 TossimActiveMessageC__Receive__receive(
 # 48 "/opt/tinyos-main/tos/lib/tossim/TossimActiveMessageC.nc"
-am_id_t arg_0x7279bc891e30, 
+am_id_t arg_0x735a41e11e30, 
 # 71 "/opt/tinyos-main/tos/interfaces/Receive.nc"
 message_t * msg, 
 void * payload, 
@@ -5995,7 +5998,7 @@ static void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC__0__TimerFrom__s
 
 static void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC__0__Timer__fired(
 # 48 "/opt/tinyos-main/tos/lib/timer/VirtualizeTimerC.nc"
-uint8_t arg_0x7279bc308950);
+uint8_t arg_0x735a41888950);
 #line 71
 enum /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC__0____nesc_unnamed4346 {
 #line 71
@@ -6136,7 +6139,7 @@ static inline void /*NodeC.SimpleSendC.AMSenderC.SenderC.AMQueueEntryP*/AMQueueE
 # 80 "/opt/tinyos-main/tos/interfaces/AMSend.nc"
 static error_t /*AMQueueP.AMQueueImplP*/AMQueueImplP__0__AMSend__send(
 # 48 "/opt/tinyos-main/tos/system/AMQueueImplP.nc"
-am_id_t arg_0x7279bc256b60, 
+am_id_t arg_0x735a417d6b60, 
 # 80 "/opt/tinyos-main/tos/interfaces/AMSend.nc"
 am_addr_t addr, 
 #line 71
@@ -6153,7 +6156,7 @@ uint8_t len);
 # 100 "/opt/tinyos-main/tos/interfaces/Send.nc"
 static void /*AMQueueP.AMQueueImplP*/AMQueueImplP__0__Send__sendDone(
 # 46 "/opt/tinyos-main/tos/system/AMQueueImplP.nc"
-uint8_t arg_0x7279bc257940, 
+uint8_t arg_0x735a417d7940, 
 # 96 "/opt/tinyos-main/tos/interfaces/Send.nc"
 message_t * msg, 
 
@@ -6562,6 +6565,12 @@ static inline /*FloodingC.SimpleSendC.QueueC*/QueueC__2__queue_t /*FloodingC.Sim
 static inline void /*FloodingC.SimpleSendC.QueueC*/QueueC__2__printQueue(void );
 #line 89
 static inline /*FloodingC.SimpleSendC.QueueC*/QueueC__2__queue_t /*FloodingC.SimpleSendC.QueueC*/QueueC__2__Queue__dequeue(void );
+# 23 "dataStructures/modules/HashmapC.nc"
+#line 20
+typedef struct /*FloodingC.SeenPacketsC*/HashmapC__0__hashmapEntry {
+  uint32_t key;
+  /*FloodingC.SeenPacketsC*/HashmapC__0__t value;
+} /*FloodingC.SeenPacketsC*/HashmapC__0__hashmapEntry;
 # 2 "lib/interfaces/SimpleSend.nc"
 static error_t NeighborDiscoveryP__SimpleSend__send(pack msg, uint16_t dest);
 # 13 "dataStructures/interfaces/Hashmap.nc"
@@ -6797,41 +6806,41 @@ static inline /*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__queue_t /*Neig
 #line 101
 static inline error_t /*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__Queue__enqueue(/*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__queue_t newVal);
 # 15 "dataStructures/modules/HashmapC.nc"
-uint16_t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__HASH_MAX_SIZE[1000];
+uint16_t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__HASH_MAX_SIZE[1000];
 
 
-uint16_t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__EMPTY_KEY[1000];
+uint16_t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__EMPTY_KEY[1000];
 
 
 
 
 #line 20
-typedef struct /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__hashmapEntry {
+typedef struct /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__hashmapEntry {
   uint32_t key;
-  /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__t value;
-} /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__hashmapEntry;
+  /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__t value;
+} /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__hashmapEntry;
 
-/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__hashmapEntry /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__map[1000][20];
-uint32_t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__keys[1000][20];
-uint16_t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__numofVals[1000];
-
-
-static inline uint32_t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__hash2(uint32_t k);
+/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__hashmapEntry /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__map[1000][20];
+uint32_t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__keys[1000][20];
+uint16_t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__numofVals[1000];
 
 
-static inline uint32_t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__hash3(uint32_t k);
+static inline uint32_t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__hash2(uint32_t k);
 
 
-
-static inline uint32_t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__hash(uint32_t k, uint32_t i);
+static inline uint32_t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__hash3(uint32_t k);
 
 
 
-static void /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__Hashmap__insert(uint32_t k, /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__t input);
+static inline uint32_t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__hash(uint32_t k, uint32_t i);
+
+
+
+static void /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__Hashmap__insert(uint32_t k, /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__t input);
 #line 130
-static inline /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__Hashmap__get(uint32_t k);
+static inline /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__Hashmap__get(uint32_t k);
 #line 143
-static inline bool /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__Hashmap__contains(uint32_t k);
+static inline bool /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__Hashmap__contains(uint32_t k);
 # 80 "/opt/tinyos-main/tos/lib/tossim/heap.c"
 static inline void init_heap(heap_t *heap)
 #line 80
@@ -7226,7 +7235,7 @@ static inline void NeighborDiscoveryP__NeighborDiscovery__readDiscovery(pack *NE
   uint8_t i;
   bool found = FALSE;
 
-  sim_log_debug(198U, NEIGHBOR_CHANNEL, "NEIGHBOR REPLY RECEIVED \n");
+  sim_log_debug(207U, NEIGHBOR_CHANNEL, "NEIGHBOR REPLY RECEIVED \n");
 
   for (i = 0; i < NeighborDiscoveryP__neighborCount[sim_node()]; i++) {
       if (NeighborDiscoveryP__neighbors[sim_node()][i].id == neighborId) {
@@ -7268,19 +7277,19 @@ inline static error_t NeighborDiscoveryP__SimpleSend__send(pack msg, uint16_t de
 # 11 "dataStructures/interfaces/Hashmap.nc"
 inline static void NeighborDiscoveryP__SeqNoMap__insert(uint32_t key, NeighborDiscoveryP__SeqNoMap__t input){
 #line 11
-  /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__Hashmap__insert(key, input);
+  /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__Hashmap__insert(key, input);
 #line 11
 }
 #line 11
 # 33 "dataStructures/modules/HashmapC.nc"
-static inline uint32_t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__hash3(uint32_t k)
+static inline uint32_t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__hash3(uint32_t k)
 #line 33
 {
   return 1 + k % 11;
 }
 
 #line 30
-static inline uint32_t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__hash2(uint32_t k)
+static inline uint32_t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__hash2(uint32_t k)
 #line 30
 {
   return k % 13;
@@ -7289,14 +7298,14 @@ static inline uint32_t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__hash2(uint32
 
 
 
-static inline uint32_t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__hash(uint32_t k, uint32_t i)
+static inline uint32_t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__hash(uint32_t k, uint32_t i)
 #line 37
 {
-  return (/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__hash2(k) + i * /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__hash3(k)) % /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__HASH_MAX_SIZE[sim_node()];
+  return (/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__hash2(k) + i * /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__hash3(k)) % /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__HASH_MAX_SIZE[sim_node()];
 }
 
 #line 130
-static inline /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__Hashmap__get(uint32_t k)
+static inline /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__t /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__Hashmap__get(uint32_t k)
 #line 130
 {
   uint32_t i = 0;
@@ -7305,19 +7314,19 @@ static inline /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__t /*NeighborDiscovery
 
 #line 132
   do {
-      j = /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__hash(k, i);
-      if (/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__map[sim_node()][j].key == k) {
-        return /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__map[sim_node()][j].value;
+      j = /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__hash(k, i);
+      if (/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__map[sim_node()][j].key == k) {
+        return /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__map[sim_node()][j].value;
         }
 #line 136
       i++;
     }
   while (
 #line 137
-  i < /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__HASH_MAX_SIZE[sim_node()]);
+  i < /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__HASH_MAX_SIZE[sim_node()]);
 
 
-  return /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__map[sim_node()][0].value;
+  return /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__map[sim_node()][0].value;
 }
 
 # 13 "dataStructures/interfaces/Hashmap.nc"
@@ -7327,7 +7336,7 @@ inline static NeighborDiscoveryP__SeqNoMap__t NeighborDiscoveryP__SeqNoMap__get(
 #line 13
 
 #line 13
-  __nesc_result = /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__Hashmap__get(key);
+  __nesc_result = /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__Hashmap__get(key);
 #line 13
 
 #line 13
@@ -7336,7 +7345,7 @@ inline static NeighborDiscoveryP__SeqNoMap__t NeighborDiscoveryP__SeqNoMap__get(
 }
 #line 13
 # 143 "dataStructures/modules/HashmapC.nc"
-static inline bool /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__Hashmap__contains(uint32_t k)
+static inline bool /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__Hashmap__contains(uint32_t k)
 #line 143
 {
   uint32_t i = 0;
@@ -7349,8 +7358,8 @@ static inline bool /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__Hashmap__contain
 
 
   do {
-      j = /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__hash(k, i);
-      if (/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__map[sim_node()][j].key == k) {
+      j = /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__hash(k, i);
+      if (/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__map[sim_node()][j].key == k) {
         return TRUE;
         }
 #line 155
@@ -7358,7 +7367,7 @@ static inline bool /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__Hashmap__contain
     }
   while (
 #line 156
-  i < /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__HASH_MAX_SIZE[sim_node()]);
+  i < /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__HASH_MAX_SIZE[sim_node()]);
   return FALSE;
 }
 
@@ -7369,7 +7378,7 @@ inline static bool NeighborDiscoveryP__SeqNoMap__contains(uint32_t key){
 #line 14
 
 #line 14
-  __nesc_result = /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__Hashmap__contains(key);
+  __nesc_result = /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__Hashmap__contains(key);
 #line 14
 
 #line 14
@@ -7391,7 +7400,7 @@ static inline void NeighborDiscoveryP__NeighborDiscovery__reply(pack *NEIGHBOR_D
 
       NeighborDiscoveryP__SimpleSend__send(NeighborDiscoveryP__localNeighborReplyPacket[sim_node()], __nesc_ntoh_uint16(NEIGHBOR_DISCOVERY_PACKET->src.nxdata));
 
-      sim_log_debug(196U, NEIGHBOR_CHANNEL, "NEIGHBOR REPLY SENT \n");
+      sim_log_debug(205U, NEIGHBOR_CHANNEL, "NEIGHBOR REPLY SENT \n");
     }
   else 
 #line 61
@@ -7405,7 +7414,7 @@ static inline void NeighborDiscoveryP__NeighborDiscovery__reply(pack *NEIGHBOR_D
           makePack(&NeighborDiscoveryP__localNeighborReplyPacket[sim_node()], TOS_NODE_ID, __nesc_ntoh_uint16(NEIGHBOR_DISCOVERY_PACKET->src.nxdata), ttl, PROTOCOL_NEIGHBOR_REPLY, __nesc_ntoh_uint16(NEIGHBOR_DISCOVERY_PACKET->seq.nxdata), payload, 0);
           NeighborDiscoveryP__SimpleSend__send(NeighborDiscoveryP__localNeighborReplyPacket[sim_node()], __nesc_ntoh_uint16(NEIGHBOR_DISCOVERY_PACKET->src.nxdata));
 
-          sim_log_debug(197U, NEIGHBOR_CHANNEL, "NEIGHBOR REPLY SENT \n");
+          sim_log_debug(206U, NEIGHBOR_CHANNEL, "NEIGHBOR REPLY SENT \n");
         }
     }
 }
@@ -7594,13 +7603,13 @@ static inline message_t *TossimActiveMessageC__Receive__default__receive(am_id_t
 }
 
 # 78 "/opt/tinyos-main/tos/interfaces/Receive.nc"
-inline static message_t * TossimActiveMessageC__Receive__receive(am_id_t arg_0x7279bc891e30, message_t * msg, void * payload, uint8_t len){
+inline static message_t * TossimActiveMessageC__Receive__receive(am_id_t arg_0x735a41e11e30, message_t * msg, void * payload, uint8_t len){
 #line 78
   nx_struct message_t *__nesc_result;
 #line 78
 
 #line 78
-  switch (arg_0x7279bc891e30) {
+  switch (arg_0x735a41e11e30) {
 #line 78
     case 6:
 #line 78
@@ -7616,7 +7625,7 @@ inline static message_t * TossimActiveMessageC__Receive__receive(am_id_t arg_0x7
 #line 78
     default:
 #line 78
-      __nesc_result = TossimActiveMessageC__Receive__default__receive(arg_0x7279bc891e30, msg, payload, len);
+      __nesc_result = TossimActiveMessageC__Receive__default__receive(arg_0x735a41e11e30, msg, payload, len);
 #line 78
       break;
 #line 78
@@ -7668,7 +7677,7 @@ static inline int SimSchedulerBasicP__sim_config_task_latency(void )
 static inline bool /*NeighborDiscoveryC.SimpleSendC.PoolC.PoolP*/PoolP__3__Pool__empty(void )
 #line 75
 {
-  sim_log_debug(202U, "PoolP", "%s size is %i\n", __FUNCTION__, (int )/*NeighborDiscoveryC.SimpleSendC.PoolC.PoolP*/PoolP__3__free[sim_node()]);
+  sim_log_debug(211U, "PoolP", "%s size is %i\n", __FUNCTION__, (int )/*NeighborDiscoveryC.SimpleSendC.PoolC.PoolP*/PoolP__3__free[sim_node()]);
   return /*NeighborDiscoveryC.SimpleSendC.PoolC.PoolP*/PoolP__3__free[sim_node()] == 0;
 }
 
@@ -7701,7 +7710,7 @@ static inline /*NeighborDiscoveryC.SimpleSendC.PoolC.PoolP*/PoolP__3__pool_t */*
       if (/*NeighborDiscoveryC.SimpleSendC.PoolC.PoolP*/PoolP__3__index[sim_node()] == 20) {
           /*NeighborDiscoveryC.SimpleSendC.PoolC.PoolP*/PoolP__3__index[sim_node()] = 0;
         }
-      sim_log_debug(204U, "PoolP", "%s size is %i\n", __FUNCTION__, (int )/*NeighborDiscoveryC.SimpleSendC.PoolC.PoolP*/PoolP__3__free[sim_node()]);
+      sim_log_debug(213U, "PoolP", "%s size is %i\n", __FUNCTION__, (int )/*NeighborDiscoveryC.SimpleSendC.PoolC.PoolP*/PoolP__3__free[sim_node()]);
       return rval;
     }
   return (void *)0;
@@ -7741,7 +7750,7 @@ static inline error_t /*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__Queue_
 #line 101
 {
   if (/*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__Queue__size() < /*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__Queue__maxSize()) {
-      sim_log_debug(212U, "QueueC", "%s: size is %hhu\n", __FUNCTION__, /*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__size[sim_node()]);
+      sim_log_debug(221U, "QueueC", "%s: size is %hhu\n", __FUNCTION__, /*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__size[sim_node()]);
       /*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__queue[sim_node()][/*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__tail[sim_node()]] = newVal;
       /*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__tail[sim_node()]++;
       if (/*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__tail[sim_node()] == 20) {
@@ -7934,13 +7943,13 @@ static inline message_t *TossimActiveMessageC__Snoop__default__receive(am_id_t i
 }
 
 # 78 "/opt/tinyos-main/tos/interfaces/Receive.nc"
-inline static message_t * TossimActiveMessageC__Snoop__receive(am_id_t arg_0x7279bc890a50, message_t * msg, void * payload, uint8_t len){
+inline static message_t * TossimActiveMessageC__Snoop__receive(am_id_t arg_0x735a41e10a50, message_t * msg, void * payload, uint8_t len){
 #line 78
   nx_struct message_t *__nesc_result;
 #line 78
 
 #line 78
-    __nesc_result = TossimActiveMessageC__Snoop__default__receive(arg_0x7279bc890a50, msg, payload, len);
+    __nesc_result = TossimActiveMessageC__Snoop__default__receive(arg_0x735a41e10a50, msg, payload, len);
 #line 78
 
 #line 78
@@ -8155,9 +8164,9 @@ static __inline  int8_t __nesc_hton_int8(void * target, int8_t value)
 }
 
 # 110 "/opt/tinyos-main/tos/interfaces/AMSend.nc"
-inline static void TossimActiveMessageC__AMSend__sendDone(am_id_t arg_0x7279bc8abc70, message_t * msg, error_t error){
+inline static void TossimActiveMessageC__AMSend__sendDone(am_id_t arg_0x735a41e2bc70, message_t * msg, error_t error){
 #line 110
-  /*AMQueueP.AMQueueImplP*/AMQueueImplP__0__AMSend__sendDone(arg_0x7279bc8abc70, msg, error);
+  /*AMQueueP.AMQueueImplP*/AMQueueImplP__0__AMSend__sendDone(arg_0x735a41e2bc70, msg, error);
 #line 110
 }
 #line 110
@@ -8744,9 +8753,9 @@ static inline void /*AMQueueP.AMQueueImplP*/AMQueueImplP__0__Send__default__send
 }
 
 # 100 "/opt/tinyos-main/tos/interfaces/Send.nc"
-inline static void /*AMQueueP.AMQueueImplP*/AMQueueImplP__0__Send__sendDone(uint8_t arg_0x7279bc257940, message_t * msg, error_t error){
+inline static void /*AMQueueP.AMQueueImplP*/AMQueueImplP__0__Send__sendDone(uint8_t arg_0x735a417d7940, message_t * msg, error_t error){
 #line 100
-  switch (arg_0x7279bc257940) {
+  switch (arg_0x735a417d7940) {
 #line 100
     case 0U:
 #line 100
@@ -8768,7 +8777,7 @@ inline static void /*AMQueueP.AMQueueImplP*/AMQueueImplP__0__Send__sendDone(uint
 #line 100
     default:
 #line 100
-      /*AMQueueP.AMQueueImplP*/AMQueueImplP__0__Send__default__sendDone(arg_0x7279bc257940, msg, error);
+      /*AMQueueP.AMQueueImplP*/AMQueueImplP__0__Send__default__sendDone(arg_0x735a417d7940, msg, error);
 #line 100
       break;
 #line 100
@@ -9261,7 +9270,7 @@ static inline error_t /*FloodingC.SimpleSendC.PoolC.PoolP*/PoolP__2__Pool__put(/
         }
       /*FloodingC.SimpleSendC.PoolC.PoolP*/PoolP__2__queue[sim_node()][emptyIndex] = newVal;
       /*FloodingC.SimpleSendC.PoolC.PoolP*/PoolP__2__free[sim_node()]++;
-      sim_log_debug(187U, "PoolP", "%s size is %i\n", __FUNCTION__, (int )/*FloodingC.SimpleSendC.PoolC.PoolP*/PoolP__2__free[sim_node()]);
+      sim_log_debug(190U, "PoolP", "%s size is %i\n", __FUNCTION__, (int )/*FloodingC.SimpleSendC.PoolC.PoolP*/PoolP__2__free[sim_node()]);
       return SUCCESS;
     }
 }
@@ -9291,18 +9300,18 @@ static inline void /*FloodingC.SimpleSendC.QueueC*/QueueC__2__printQueue(void )
   int j;
 
 #line 76
-  sim_log_debug(188U, "QueueC", "head <-");
+  sim_log_debug(191U, "QueueC", "head <-");
   for (i = /*FloodingC.SimpleSendC.QueueC*/QueueC__2__head[sim_node()]; i < /*FloodingC.SimpleSendC.QueueC*/QueueC__2__head[sim_node()] + /*FloodingC.SimpleSendC.QueueC*/QueueC__2__size[sim_node()]; i++) {
-      sim_log_debug_clear(189U, "QueueC", "[");
+      sim_log_debug_clear(192U, "QueueC", "[");
       for (j = 0; j < sizeof(/*FloodingC.SimpleSendC.QueueC*/QueueC__2__queue_t ); j++) {
           uint8_t v = ((uint8_t *)&/*FloodingC.SimpleSendC.QueueC*/QueueC__2__queue[sim_node()][i % 20])[j];
 
 #line 81
-          sim_log_debug_clear(190U, "QueueC", "%0.2hhx", v);
+          sim_log_debug_clear(193U, "QueueC", "%0.2hhx", v);
         }
-      sim_log_debug_clear(191U, "QueueC", "] ");
+      sim_log_debug_clear(194U, "QueueC", "] ");
     }
-  sim_log_debug_clear(192U, "QueueC", "<- tail\n");
+  sim_log_debug_clear(195U, "QueueC", "<- tail\n");
 }
 
 #line 69
@@ -9319,7 +9328,7 @@ static inline /*FloodingC.SimpleSendC.QueueC*/QueueC__2__queue_t /*FloodingC.Sim
   /*FloodingC.SimpleSendC.QueueC*/QueueC__2__queue_t t = /*FloodingC.SimpleSendC.QueueC*/QueueC__2__Queue__head();
 
 #line 91
-  sim_log_debug(193U, "QueueC", "%s: size is %hhu\n", __FUNCTION__, /*FloodingC.SimpleSendC.QueueC*/QueueC__2__size[sim_node()]);
+  sim_log_debug(196U, "QueueC", "%s: size is %hhu\n", __FUNCTION__, /*FloodingC.SimpleSendC.QueueC*/QueueC__2__size[sim_node()]);
   if (!/*FloodingC.SimpleSendC.QueueC*/QueueC__2__Queue__empty()) {
       /*FloodingC.SimpleSendC.QueueC*/QueueC__2__head[sim_node()]++;
       if (/*FloodingC.SimpleSendC.QueueC*/QueueC__2__head[sim_node()] == 20) {
@@ -9441,19 +9450,19 @@ static inline error_t /*FloodingC.SimpleSendC.SimpleSendP*/SimpleSendP__1__send(
 #line 133
         {
 
-          sim_log_debug(181U, GENERAL_CHANNEL, "The radio is busy, or something\n");
+          sim_log_debug(184U, GENERAL_CHANNEL, "The radio is busy, or something\n");
           return FAIL;
         }
     }
   else 
 #line 138
     {
-      sim_log_debug(182U, GENERAL_CHANNEL, "The radio is busy");
+      sim_log_debug(185U, GENERAL_CHANNEL, "The radio is busy");
       return EBUSY;
     }
 
 
-  sim_log_debug(183U, GENERAL_CHANNEL, "FAILED!?");
+  sim_log_debug(186U, GENERAL_CHANNEL, "FAILED!?");
   return FAIL;
 }
 
@@ -9540,7 +9549,7 @@ static inline error_t /*NeighborDiscoveryC.SimpleSendC.PoolC.PoolP*/PoolP__3__Po
         }
       /*NeighborDiscoveryC.SimpleSendC.PoolC.PoolP*/PoolP__3__queue[sim_node()][emptyIndex] = newVal;
       /*NeighborDiscoveryC.SimpleSendC.PoolC.PoolP*/PoolP__3__free[sim_node()]++;
-      sim_log_debug(205U, "PoolP", "%s size is %i\n", __FUNCTION__, (int )/*NeighborDiscoveryC.SimpleSendC.PoolC.PoolP*/PoolP__3__free[sim_node()]);
+      sim_log_debug(214U, "PoolP", "%s size is %i\n", __FUNCTION__, (int )/*NeighborDiscoveryC.SimpleSendC.PoolC.PoolP*/PoolP__3__free[sim_node()]);
       return SUCCESS;
     }
 }
@@ -9574,7 +9583,7 @@ static inline /*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__queue_t /*Neig
   /*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__queue_t t = /*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__Queue__head();
 
 #line 91
-  sim_log_debug(211U, "QueueC", "%s: size is %hhu\n", __FUNCTION__, /*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__size[sim_node()]);
+  sim_log_debug(220U, "QueueC", "%s: size is %hhu\n", __FUNCTION__, /*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__size[sim_node()]);
   if (!/*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__Queue__empty()) {
       /*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__head[sim_node()]++;
       if (/*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__head[sim_node()] == 20) {
@@ -9696,19 +9705,19 @@ static inline error_t /*NeighborDiscoveryC.SimpleSendC.SimpleSendP*/SimpleSendP_
 #line 133
         {
 
-          sim_log_debug(199U, GENERAL_CHANNEL, "The radio is busy, or something\n");
+          sim_log_debug(208U, GENERAL_CHANNEL, "The radio is busy, or something\n");
           return FAIL;
         }
     }
   else 
 #line 138
     {
-      sim_log_debug(200U, GENERAL_CHANNEL, "The radio is busy");
+      sim_log_debug(209U, GENERAL_CHANNEL, "The radio is busy");
       return EBUSY;
     }
 
 
-  sim_log_debug(201U, GENERAL_CHANNEL, "FAILED!?");
+  sim_log_debug(210U, GENERAL_CHANNEL, "FAILED!?");
   return FAIL;
 }
 
@@ -9763,9 +9772,9 @@ static inline void SimSchedulerBasicP__TaskBasic__default__runTask(uint8_t id)
 }
 
 # 75 "/opt/tinyos-main/tos/interfaces/TaskBasic.nc"
-inline static void SimSchedulerBasicP__TaskBasic__runTask(uint8_t arg_0x7279bca7a020){
+inline static void SimSchedulerBasicP__TaskBasic__runTask(uint8_t arg_0x735a41ffa020){
 #line 75
-  switch (arg_0x7279bca7a020) {
+  switch (arg_0x735a41ffa020) {
 #line 75
     case TossimPacketModelC__startDoneTask:
 #line 75
@@ -9841,7 +9850,7 @@ inline static void SimSchedulerBasicP__TaskBasic__runTask(uint8_t arg_0x7279bca7
 #line 75
     default:
 #line 75
-      SimSchedulerBasicP__TaskBasic__default__runTask(arg_0x7279bca7a020);
+      SimSchedulerBasicP__TaskBasic__default__runTask(arg_0x735a41ffa020);
 #line 75
       break;
 #line 75
@@ -9901,13 +9910,13 @@ inline static am_addr_t /*AMQueueP.AMQueueImplP*/AMQueueImplP__0__AMPacket__dest
 }
 #line 78
 # 80 "/opt/tinyos-main/tos/interfaces/AMSend.nc"
-inline static error_t /*AMQueueP.AMQueueImplP*/AMQueueImplP__0__AMSend__send(am_id_t arg_0x7279bc256b60, am_addr_t addr, message_t * msg, uint8_t len){
+inline static error_t /*AMQueueP.AMQueueImplP*/AMQueueImplP__0__AMSend__send(am_id_t arg_0x735a417d6b60, am_addr_t addr, message_t * msg, uint8_t len){
 #line 80
   unsigned char __nesc_result;
 #line 80
 
 #line 80
-  __nesc_result = TossimActiveMessageC__AMSend__send(arg_0x7279bc256b60, addr, msg, len);
+  __nesc_result = TossimActiveMessageC__AMSend__send(arg_0x735a417d6b60, addr, msg, len);
 #line 80
 
 #line 80
@@ -10821,7 +10830,7 @@ static inline void NeighborDiscoveryP__sendTimer__fired(void )
   uint8_t payload[0] = {  };
   uint8_t ttl = 1;
 
-  sim_log_debug(195U, NEIGHBOR_CHANNEL, "NEIGHBOR DISCOVERY SENT \n");
+  sim_log_debug(204U, NEIGHBOR_CHANNEL, "NEIGHBOR DISCOVERY SENT \n");
 
   makePack(&NeighborDiscoveryP__localNeighborDiscoveryPacket[sim_node()], TOS_NODE_ID, AM_BROADCAST_ADDR, ttl, PROTOCOL_NEIGHBOR, NeighborDiscoveryP__sequenceNumber[sim_node()], payload, 0);
 
@@ -10858,9 +10867,9 @@ static inline void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC__0__Timer
 }
 
 # 83 "/opt/tinyos-main/tos/lib/timer/Timer.nc"
-inline static void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC__0__Timer__fired(uint8_t arg_0x7279bc308950){
+inline static void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC__0__Timer__fired(uint8_t arg_0x735a41888950){
 #line 83
-  switch (arg_0x7279bc308950) {
+  switch (arg_0x735a41888950) {
 #line 83
     case 0U:
 #line 83
@@ -10888,7 +10897,7 @@ inline static void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC__0__Timer
 #line 83
     default:
 #line 83
-      /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC__0__Timer__default__fired(arg_0x7279bc308950);
+      /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC__0__Timer__default__fired(arg_0x735a41888950);
 #line 83
       break;
 #line 83
@@ -13153,40 +13162,40 @@ static void SimSchedulerBasicP__sim_scheduler_submit_event(void )
 }
 
 # 41 "dataStructures/modules/HashmapC.nc"
-static void /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__Hashmap__insert(uint32_t k, /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__t input)
+static void /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__Hashmap__insert(uint32_t k, /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__t input)
 #line 41
 {
   uint32_t i = 0;
 #line 42
   uint32_t j = 0;
 
-  if (k == /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__EMPTY_KEY[sim_node()]) {
-      sim_log_debug(213U, HASHMAP_CHANNEL, "[HASHMAP] You cannot insert a key of %d.", /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__EMPTY_KEY[sim_node()]);
+  if (k == /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__EMPTY_KEY[sim_node()]) {
+      sim_log_debug(222U, HASHMAP_CHANNEL, "[HASHMAP] You cannot insert a key of %d.", /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__EMPTY_KEY[sim_node()]);
       return;
     }
 
   do {
 
-      j = /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__hash(k, i);
+      j = /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__hash(k, i);
 
 
-      if (/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__map[sim_node()][j].key == /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__EMPTY_KEY[sim_node()] || /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__map[sim_node()][j].key == k) {
+      if (/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__map[sim_node()][j].key == /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__EMPTY_KEY[sim_node()] || /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__map[sim_node()][j].key == k) {
 
 
-          if (/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__map[sim_node()][j].key == /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__EMPTY_KEY[sim_node()]) {
-              /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__keys[sim_node()][/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__numofVals[sim_node()]] = k;
-              /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__numofVals[sim_node()]++;
+          if (/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__map[sim_node()][j].key == /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__EMPTY_KEY[sim_node()]) {
+              /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__keys[sim_node()][/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__numofVals[sim_node()]] = k;
+              /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__numofVals[sim_node()]++;
             }
 
 
-          /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__map[sim_node()][j].value = input;
-          /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__map[sim_node()][j].key = k;
+          /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__map[sim_node()][j].value = input;
+          /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__map[sim_node()][j].key = k;
           return;
         }
       i++;
     }
   while (
-  i < /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__HASH_MAX_SIZE[sim_node()]);
+  i < /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__HASH_MAX_SIZE[sim_node()]);
 }
 
 # 43 "includes/packet.h"
@@ -13239,18 +13248,18 @@ static void /*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__printQueue(void 
   int j;
 
 #line 76
-  sim_log_debug(206U, "QueueC", "head <-");
+  sim_log_debug(215U, "QueueC", "head <-");
   for (i = /*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__head[sim_node()]; i < /*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__head[sim_node()] + /*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__size[sim_node()]; i++) {
-      sim_log_debug_clear(207U, "QueueC", "[");
+      sim_log_debug_clear(216U, "QueueC", "[");
       for (j = 0; j < sizeof(/*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__queue_t ); j++) {
           uint8_t v = ((uint8_t *)&/*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__queue[sim_node()][i % 20])[j];
 
 #line 81
-          sim_log_debug_clear(208U, "QueueC", "%0.2hhx", v);
+          sim_log_debug_clear(217U, "QueueC", "%0.2hhx", v);
         }
-      sim_log_debug_clear(209U, "QueueC", "] ");
+      sim_log_debug_clear(218U, "QueueC", "] ");
     }
-  sim_log_debug_clear(210U, "QueueC", "<- tail\n");
+  sim_log_debug_clear(219U, "QueueC", "<- tail\n");
 }
 
 # 38 "lib/modules/SimpleSendP.nc"
@@ -14866,6 +14875,8 @@ static int __nesc_nido_resolve(int __nesc_mote,
     return 0;
   }
 
+  /* Module HashmapC__0 */
+
   /* Module NeighborDiscoveryP */
   if (!strcmp(varname, "NeighborDiscoveryP__localNeighborDiscoveryPacket"))
   {
@@ -14966,35 +14977,35 @@ static int __nesc_nido_resolve(int __nesc_mote,
     return 0;
   }
 
-  /* Module HashmapC__0 */
-  if (!strcmp(varname, "/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__HASH_MAX_SIZE"))
+  /* Module HashmapC__1 */
+  if (!strcmp(varname, "/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__HASH_MAX_SIZE"))
   {
-    *addr = (uintptr_t)&/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__HASH_MAX_SIZE[__nesc_mote];
-    *size = sizeof(/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__HASH_MAX_SIZE[__nesc_mote]);
+    *addr = (uintptr_t)&/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__HASH_MAX_SIZE[__nesc_mote];
+    *size = sizeof(/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__HASH_MAX_SIZE[__nesc_mote]);
     return 0;
   }
-  if (!strcmp(varname, "/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__EMPTY_KEY"))
+  if (!strcmp(varname, "/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__EMPTY_KEY"))
   {
-    *addr = (uintptr_t)&/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__EMPTY_KEY[__nesc_mote];
-    *size = sizeof(/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__EMPTY_KEY[__nesc_mote]);
+    *addr = (uintptr_t)&/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__EMPTY_KEY[__nesc_mote];
+    *size = sizeof(/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__EMPTY_KEY[__nesc_mote]);
     return 0;
   }
-  if (!strcmp(varname, "/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__map"))
+  if (!strcmp(varname, "/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__map"))
   {
-    *addr = (uintptr_t)&/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__map[__nesc_mote];
-    *size = sizeof(/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__map[__nesc_mote]);
+    *addr = (uintptr_t)&/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__map[__nesc_mote];
+    *size = sizeof(/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__map[__nesc_mote]);
     return 0;
   }
-  if (!strcmp(varname, "/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__keys"))
+  if (!strcmp(varname, "/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__keys"))
   {
-    *addr = (uintptr_t)&/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__keys[__nesc_mote];
-    *size = sizeof(/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__keys[__nesc_mote]);
+    *addr = (uintptr_t)&/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__keys[__nesc_mote];
+    *size = sizeof(/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__keys[__nesc_mote]);
     return 0;
   }
-  if (!strcmp(varname, "/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__numofVals"))
+  if (!strcmp(varname, "/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__numofVals"))
   {
-    *addr = (uintptr_t)&/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__numofVals[__nesc_mote];
-    *size = sizeof(/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__numofVals[__nesc_mote]);
+    *addr = (uintptr_t)&/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__numofVals[__nesc_mote];
+    *size = sizeof(/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__numofVals[__nesc_mote]);
     return 0;
   }
 
@@ -15137,6 +15148,8 @@ static void __nesc_nido_initialise(int __nesc_mote)
   /*FloodingC.SimpleSendC.QueueC*/QueueC__2__head[__nesc_mote] = 0;
   /*FloodingC.SimpleSendC.QueueC*/QueueC__2__size[__nesc_mote] = 0;
 
+  /* Module HashmapC__0 */
+
   /* Module NeighborDiscoveryP */
   memset((void *)&NeighborDiscoveryP__localNeighborDiscoveryPacket[__nesc_mote], 0, sizeof NeighborDiscoveryP__localNeighborDiscoveryPacket[__nesc_mote]);
   memset((void *)&NeighborDiscoveryP__localNeighborReplyPacket[__nesc_mote], 0, sizeof NeighborDiscoveryP__localNeighborReplyPacket[__nesc_mote]);
@@ -15162,11 +15175,11 @@ static void __nesc_nido_initialise(int __nesc_mote)
   /*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__tail[__nesc_mote] = 0;
   /*NeighborDiscoveryC.SimpleSendC.QueueC*/QueueC__3__size[__nesc_mote] = 0;
 
-  /* Module HashmapC__0 */
-  /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__HASH_MAX_SIZE[__nesc_mote] = 20;
-  /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__EMPTY_KEY[__nesc_mote] = 0;
-  memset((void *)&/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__map[__nesc_mote], 0, sizeof /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__map[__nesc_mote]);
-  memset((void *)&/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__keys[__nesc_mote], 0, sizeof /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__keys[__nesc_mote]);
-  memset((void *)&/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__numofVals[__nesc_mote], 0, sizeof /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__0__numofVals[__nesc_mote]);
+  /* Module HashmapC__1 */
+  /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__HASH_MAX_SIZE[__nesc_mote] = 20;
+  /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__EMPTY_KEY[__nesc_mote] = 0;
+  memset((void *)&/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__map[__nesc_mote], 0, sizeof /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__map[__nesc_mote]);
+  memset((void *)&/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__keys[__nesc_mote], 0, sizeof /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__keys[__nesc_mote]);
+  memset((void *)&/*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__numofVals[__nesc_mote], 0, sizeof /*NeighborDiscoveryC.SeqNoMapC*/HashmapC__1__numofVals[__nesc_mote]);
 
 }
