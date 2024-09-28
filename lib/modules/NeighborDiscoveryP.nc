@@ -34,7 +34,7 @@ implementation {
     }
 
     event void sendTimer.fired() {
-        uint8_t* payload = "";
+        uint8_t payload[] = {};
         uint8_t ttl = 1;
 
         dbg(NEIGHBOR_CHANNEL, "NEIGHBOR DISCOVERY SENT \n");
@@ -47,7 +47,7 @@ implementation {
     }
 
     command void NeighborDiscovery.reply(pack* NEIGHBOR_DISCOVERY_PACKET) {
-        uint8_t* payload = "";
+        uint8_t payload[] = {};
         uint8_t ttl = 1;
 
         if (!call SeqNoMap.contains(NEIGHBOR_DISCOVERY_PACKET->src)) {
