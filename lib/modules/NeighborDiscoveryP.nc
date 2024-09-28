@@ -3,6 +3,7 @@
 #include "../../includes/channels.h"
 #include "../../includes/protocol.h"
 #include "../../includes/constants.h"
+#include "../../includes/structs.h"
 
 module NeighborDiscoveryP {
     provides interface NeighborDiscovery;
@@ -10,21 +11,13 @@ module NeighborDiscoveryP {
     uses interface SimpleSend;
     uses interface Packet;
     uses interface Hashmap<uint16_t> as SeqNoMap;
-    uses interface Hashmap<neighbor_t> as NeighborMap;
+    uses interface Hashmap<uint16_t> as NeighborMap;
 }
 
 implementation {
     pack NEIGHBOR_DISCOVERY_PACKET;
     pack NEIGHBOR_REPLY_PACKET;
     int SEQUENCE_NUMBER = 0;
-
-    // Define a struct to store neighbor information
-    typedef struct neighbor {
-        uint16_t id;
-        uint16_t lastHeard;
-        uint16_t timeDown;
-
-    } neighbor_t;
 
     command void NeighborDiscovery.start() {
         call sendTimer.startPeriodic(TICKS * 30);
