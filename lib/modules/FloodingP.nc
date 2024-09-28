@@ -3,7 +3,7 @@
 #include "../../includes/channels.h"
 #include "../../includes/protocol.h"
 
-generic module FloodingP(){
+module FloodingP{
    provides interface Flooding;
    uses interface Packet;
    uses interface SimpleSend;
@@ -12,13 +12,13 @@ generic module FloodingP(){
 }
 
 implementation{
-    pack FLOOD_PACKET;
-    uint16_t SEQUENCE_NUMBER = 0;
+    uint16_t SEQUENCE_NUMBER;
 
 
     command void Flooding.newFlood(uint16_t TARGET){
         uint8_t TTL = MAX_TTL;
         uint8_t* PAYLOAD = "";
+        pack* FLOOD_PACKET;
         dbg(FLOODING_CHANNEL, "NEW FLOOD SENT \n");
         makePack(&FLOOD_PACKET, TOS_NODE_ID, TARGET, TTL, PROTOCOL_FLOOD, SEQUENCE_NUMBER, PAYLOAD, 0);
         call SimpleSend.send(FLOOD_PACKET, AM_BROADCAST_ADDR);

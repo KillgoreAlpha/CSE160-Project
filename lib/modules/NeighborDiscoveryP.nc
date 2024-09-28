@@ -2,6 +2,7 @@
 #include "../../includes/sendInfo.h"
 #include "../../includes/channels.h"
 #include "../../includes/protocol.h"
+#include "../../includes/constants.h"
 
 module NeighborDiscoveryP {
     provides interface NeighborDiscovery;
@@ -61,7 +62,7 @@ implementation {
         }
     }
 
-    command void NeighborDiscovery.getReply(pack* NEIGHBOR_REPLY_PACKET) {
+    command void NeighborDiscovery.readDiscovery(pack* NEIGHBOR_REPLY_PACKET) {
         uint16_t NEIGHBOR_ID = NEIGHBOR_REPLY_PACKET->src;
         dbg(NEIGHBOR_CHANNEL, "NEIGHBOR REPLY RECEIVED \n");
 
@@ -79,7 +80,7 @@ implementation {
         return call NeighborMap.contains(nodeId);
     }
 
-    command uint32_t NeighborDiscovery.getLastHeard(uint16_t nodeId) {
+    command uint16_t NeighborDiscovery.getLastHeard(uint16_t nodeId) {
         if (call NeighborMap.contains(nodeId)) {
             neighbor_t neighbor = call NeighborMap.get(nodeId);
             return neighbor.lastHeard;
