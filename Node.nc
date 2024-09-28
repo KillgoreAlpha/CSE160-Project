@@ -61,11 +61,12 @@ implementation{
          pack* myMsg=(pack*) payload;
          dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
          myProtocol = myMsg->protocol;
+         // Do checks for TTL
 
 
          switch(myProtocol){
             case(PROTOCOL_NEIGHBOR):
-               // Add neighbor to neightbors
+               // Add neighbor to neighbors
 
                // Reply to Neighbor
                call NeighborDiscovery.reply(myMsg);
