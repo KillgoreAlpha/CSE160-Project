@@ -8,4 +8,7 @@ implementation{
 
     components new TimerMilliC() as sendTimer;
     NeighborDiscoveryP.sendTimer -> sendTimer;
+
+    components new SimpleSendC(AM_PACK);
+    NeighborDiscoveryP.SimpleSend -> SimpleSendC;
 }

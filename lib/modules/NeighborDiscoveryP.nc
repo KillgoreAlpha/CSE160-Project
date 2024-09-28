@@ -37,47 +37,47 @@ implementation {
         uint8_t TTL = 1;
 
         // Check if we've seen this sequence number before
-        if (!call SeqNoMap.contains(NEIGHBOR_DISCOVERY_PACKET->src)) {
-            call SeqNoMap.insert(NEIGHBOR_DISCOVERY_PACKET->src, NEIGHBOR_DISCOVERY_PACKET->seq);
+        // if (!call SeqNoMap.contains(NEIGHBOR_DISCOVERY_PACKET->src)) {
+        //     call SeqNoMap.insert(NEIGHBOR_DISCOVERY_PACKET->src, NEIGHBOR_DISCOVERY_PACKET->seq);
             
             makePack(&NEIGHBOR_REPLY_PACKET, TOS_NODE_ID, NEIGHBOR_DISCOVERY_PACKET->src, TTL, PROTOCOL_NEIGHBOR_REPLY, NEIGHBOR_DISCOVERY_PACKET->seq, PAYLOAD, 0);
             call SimpleSend.send(NEIGHBOR_REPLY_PACKET, NEIGHBOR_DISCOVERY_PACKET->src);
             dbg(NEIGHBOR_CHANNEL, "NEIGHBOR REPLY SENT \n");
-        } else {
-            uint16_t lastSeq = call SeqNoMap.get(NEIGHBOR_DISCOVERY_PACKET->src);
-            if (NEIGHBOR_DISCOVERY_PACKET->seq > lastSeq) {
-                call SeqNoMap.insert(NEIGHBOR_DISCOVERY_PACKET->src, NEIGHBOR_DISCOVERY_PACKET->seq);
+        // } else {
+            // uint16_t lastSeq = call SeqNoMap.get(NEIGHBOR_DISCOVERY_PACKET->src);
+            // if (NEIGHBOR_DISCOVERY_PACKET->seq > lastSeq) {
+            //     call SeqNoMap.insert(NEIGHBOR_DISCOVERY_PACKET->src, NEIGHBOR_DISCOVERY_PACKET->seq);
                 
                 makePack(&NEIGHBOR_REPLY_PACKET, TOS_NODE_ID, NEIGHBOR_DISCOVERY_PACKET->src, TTL, PROTOCOL_NEIGHBOR_REPLY, NEIGHBOR_DISCOVERY_PACKET->seq, PAYLOAD, 0);
                 call SimpleSend.send(NEIGHBOR_REPLY_PACKET, NEIGHBOR_DISCOVERY_PACKET->src);
                 dbg(NEIGHBOR_CHANNEL, "NEIGHBOR REPLY SENT \n");
             }
-        }
-    }
+        // }
+    // }
 
     command void NeighborDiscovery.readDiscovery(pack* NEIGHBOR_REPLY_PACKET) {
         uint16_t NEIGHBOR_ID = NEIGHBOR_REPLY_PACKET->src;
         dbg(NEIGHBOR_CHANNEL, "NEIGHBOR REPLY RECEIVED \n");
 
-        // Update or insert neighbor information
-        neighbor_t neighbor;
-        neighbor.id = NEIGHBOR_ID;
-        neighbor.lastHeard = NEIGHBOR_REPLY_PACKET->seq;
+        // // Update or insert neighbor information
+        // // neighbor_t neighbor;
+        // neighbor.id = NEIGHBOR_ID;
+        // neighbor.lastHeard = NEIGHBOR_REPLY_PACKET->seq;
 
-        call NeighborMap.insert(NEIGHBOR_ID, neighbor);
+        // call NeighborMap.insert(NEIGHBOR_ID, neighbor);
     }
 
-    // Additional helper functions
+    // // Additional helper functions
 
-    command bool NeighborDiscovery.isNeighbor(uint16_t nodeId) {
-        return call NeighborMap.contains(nodeId);
-    }
+    // command bool NeighborDiscovery.isNeighbor(uint16_t nodeId) {
+    //     return call NeighborMap.contains(nodeId);
+    // }
 
-    command uint16_t NeighborDiscovery.getLastHeard(uint16_t nodeId) {
-        if (call NeighborMap.contains(nodeId)) {
-            neighbor_t neighbor = call NeighborMap.get(nodeId);
-            return neighbor.lastHeard;
-        }
-        return 0;
-    }
+    // command uint16_t NeighborDiscovery.getLastHeard(uint16_t nodeId) {
+    //     if (call NeighborMap.contains(nodeId)) {
+    //         neighbor_t neighbor = call NeighborMap.get(nodeId);
+    //         return neighbor.lastHeard;
+    //     }
+    //     return 0;
+    // }
 }
