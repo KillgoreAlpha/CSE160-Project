@@ -33,18 +33,18 @@ implementation {
         }
 
         if (call SeenPackets.contains(packet_key)) {
-            dbg(FLOODING_CHANNEL, "Dropping duplicate flood packet\n");
+            dbg(FLOODING_CHANNEL, "Dropping duplicate flood packet at node %d \n", TOS_NODE_ID);
             return;
         }
 
         call SeenPackets.insert(packet_key, 1);
 
         if (packet->dest == TOS_NODE_ID) {
-            dbg(FLOODING_CHANNEL, "Flood packet received at destination\n");
+            dbg(FLOODING_CHANNEL, "Flood packet received from node %d at destination node %d\n", packet->src, TOS_NODE_ID);
             // Process the packet here
         } else {
             packet->TTL--;
-            dbg(FLOODING_CHANNEL, "Forwarding flood packet from %d to %d, TTL %d\n", packet->src, packet->dest, packet->TTL);
+            dbg(FLOODING_CHANNEL, "Forwarding flood packet from %d to %d, TTL %d\n", TOS_NODE_ID, packet->dest, packet->TTL);
             call SimpleSend.send(*packet, AM_BROADCAST_ADDR);
         }
     }

@@ -62,8 +62,6 @@ implementation{
          dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
          myProtocol = myMsg->protocol;
          // Do checks for TTL
-
-
          switch(myProtocol){
             case(PROTOCOL_NEIGHBOR):
                // Add neighbor to neighbors
@@ -74,6 +72,11 @@ implementation{
             case(PROTOCOL_NEIGHBOR_REPLY):
                // Read neighbor reply
                call NeighborDiscovery.readDiscovery(myMsg);
+               // 
+               break;
+            case(PROTOCOL_FLOOD):
+               // Read neighbor reply
+               call Flooding.forwardFlood(myMsg);
                // 
                break;
          }

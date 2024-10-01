@@ -30,7 +30,7 @@ implementation {
     uint8_t neighborCount = 0;
 
     command void NeighborDiscovery.start() {
-        call sendTimer.startPeriodic(30 * TICKS);
+        call sendTimer.startPeriodic(600 * TICKS);
     }
 
     event void sendTimer.fired() {
