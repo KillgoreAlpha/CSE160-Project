@@ -13,10 +13,9 @@ module FloodingP {
 implementation {
     uint16_t sequence_number = 0;
 
-    command void Flooding.newFlood(uint16_t TARGET) {
+    command void Flooding.newFlood(uint16_t TARGET, uint8_t *payload) {
         pack packet;
         uint8_t TTL = MAX_TTL;
-        uint8_t* payload = "";
 
         dbg(FLOODING_CHANNEL, "Initiating new flood to node %d\n", TARGET);
 

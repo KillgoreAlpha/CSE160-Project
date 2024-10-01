@@ -37,15 +37,11 @@ implementation {
         uint8_t payload[] = {};
         uint8_t ttl = 1;
 
-        
-
         makePack(&localNeighborDiscoveryPacket, TOS_NODE_ID, AM_BROADCAST_ADDR, ttl, PROTOCOL_NEIGHBOR, sequenceNumber, payload, 0);
         
         call SimpleSend.send(localNeighborDiscoveryPacket, AM_BROADCAST_ADDR);
         
         dbg(NEIGHBOR_CHANNEL, "NEIGHBOR DISCOVERY SENT FROM NODE %hhu \n", TOS_NODE_ID);
-
-        // debugPack(NEIGHBOR_CHANNEL, localNeighborDiscoveryPacket);
 
         sequenceNumber++;
     }

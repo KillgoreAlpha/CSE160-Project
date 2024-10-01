@@ -95,6 +95,16 @@ implementation{
 
    }
 
+   event void CommandHandler.neighborDiscovery() {
+      dbg(GENERAL_CHANNEL, "NEIGHBOR DISCOVERY EVENT \n");
+      call NeighborDiscovery.start();
+   }
+
+   event void CommandHandler.flood(uint16_t destination, uint8_t *payload) {
+      dbg(GENERAL_CHANNEL, "FLOOD EVENT \n");
+      call Flooding.newFlood(destination, payload);
+   }
+
    event void CommandHandler.printRouteTable(){}
 
    event void CommandHandler.printLinkState(){}
