@@ -37,11 +37,15 @@ implementation {
         uint8_t payload[] = {};
         uint8_t ttl = 1;
 
-        dbg(NEIGHBOR_CHANNEL, "NEIGHBOR DISCOVERY SENT \n");
+        
 
         makePack(&localNeighborDiscoveryPacket, TOS_NODE_ID, AM_BROADCAST_ADDR, ttl, PROTOCOL_NEIGHBOR, sequenceNumber, payload, 0);
         
         call SimpleSend.send(localNeighborDiscoveryPacket, AM_BROADCAST_ADDR);
+        
+        dbg(NEIGHBOR_CHANNEL, "NEIGHBOR DISCOVERY SENT FROM NODE %hhu \n", TOS_NODE_ID);
+
+        // debugPack(NEIGHBOR_CHANNEL, localNeighborDiscoveryPacket);
 
         sequenceNumber++;
     }
@@ -57,7 +61,8 @@ implementation {
             
             call SimpleSend.send(localNeighborReplyPacket, NEIGHBOR_DISCOVERY_PACKET->src);
             
-            dbg(NEIGHBOR_CHANNEL, "NEIGHBOR REPLY SENT \n");
+            dbg(NEIGHBOR_CHANNEL, "NEIGHBOR REPLY SENT FROM NODE %hhu TO NODE %hhu \n", TOS_NODE_ID, NEIGHBOR_DISCOVERY_PACKET->src);
+
         } else {
             uint16_t lastSeq = call SeqNoMap.get(NEIGHBOR_DISCOVERY_PACKET->src);
             if (NEIGHBOR_DISCOVERY_PACKET->seq > lastSeq) {
@@ -66,7 +71,7 @@ implementation {
                 makePack(&localNeighborReplyPacket, TOS_NODE_ID, NEIGHBOR_DISCOVERY_PACKET->src, ttl, PROTOCOL_NEIGHBOR_REPLY, NEIGHBOR_DISCOVERY_PACKET->seq, payload, 0);
                 call SimpleSend.send(localNeighborReplyPacket, NEIGHBOR_DISCOVERY_PACKET->src);
                 
-                dbg(NEIGHBOR_CHANNEL, "NEIGHBOR REPLY SENT \n");
+                dbg(NEIGHBOR_CHANNEL, "NEIGHBOR REPLY SENT FROM NODE %hhu TO NODE %hhu \n", TOS_NODE_ID, NEIGHBOR_DISCOVERY_PACKET->src);
             }
         }
     }
@@ -76,7 +81,7 @@ implementation {
         uint8_t i;
         bool found = FALSE;
         
-        dbg(NEIGHBOR_CHANNEL, "NEIGHBOR REPLY RECEIVED \n");
+        dbg(NEIGHBOR_CHANNEL, "NEIGHBOR REPLY RECEIVED BY NODE %hhu FROM NODE %hhu \n", TOS_NODE_ID, NEIGHBOR_REPLY_PACKET->src);
 
         for (i = 0; i < neighborCount; i++) {
             if (neighbors[i].id == neighborId) {
