@@ -17,7 +17,7 @@ implementation {
         pack packet;
         uint8_t TTL = MAX_TTL;
 
-        dbg(FLOODING_CHANNEL, "Initiating new flood to node %d\n", TARGET);
+        dbg(FLOODING_CHANNEL, "Initiating new flood to node %d from %d \n", TARGET, TOS_NODE_ID);
 
         makePack(&packet, TOS_NODE_ID, TARGET, TTL, PROTOCOL_FLOOD, sequence_number++, payload, PACKET_MAX_PAYLOAD_SIZE);
         

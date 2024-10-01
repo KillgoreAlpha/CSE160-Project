@@ -4,7 +4,7 @@
 #include "../../includes/protocol.h"
 
 #define INACTIVE_THRESHOLD 5
-#define TICKS 1000
+#define TICKS 1024
 #define MAX_NEIGHBORS 20
 
 typedef struct neighbor {
