@@ -145,7 +145,7 @@ class TestSim:
 def main():
     s = TestSim();
     s.runTime(10);
-    s.loadTopo("long_line.topo");
+    s.loadTopo("example.topo");
     s.loadNoise("no_noise.txt");
     s.bootAll();
     s.addChannel(s.COMMAND_CHANNEL);
@@ -158,7 +158,7 @@ def main():
     s.runTime(10);
     s.ping(1, 3, "Hi!");
     s.runTime(20);
-    s.flood(1, 18, "I'm Flooding!")
+    s.flood(1, 7, "I'm Flooding!")
     s.runTime(60)
 
 if __name__ == '__main__':
