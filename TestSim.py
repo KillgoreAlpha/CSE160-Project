@@ -17,8 +17,7 @@ class TestSim:
     CMD_TEST_CLIENT = 4
     CMD_TEST_SERVER = 5
     CMD_KILL = 6
-    CMD_NEIGHBOR_DISCOVERY = 7
-    CMD_FLOOD = 8
+    CMD_FLOOD = 7
     CMD_ERROR = 9
 
     # CHANNELS - see includes/channels.h

@@ -19,12 +19,23 @@ module Node{
    uses interface SplitControl as AMControl;
    uses interface Receive;
 
+   uses interface Transport;
+
    uses interface SimpleSend as Sender;
 
    uses interface CommandHandler;
 
+   // Project 1
    uses interface NeighborDiscovery;
    uses interface Flooding;
+
+   // Project 2
+   uses interface LinkStateRouting as LinkState;
+
+   // Project 3
+
+   // Project 4
+
 }
 
 implementation{
@@ -41,6 +52,7 @@ implementation{
    event void Boot.booted(){
       call AMControl.start();
       call NeighborDiscovery.start();
+      call Transport.start();
       dbg(GENERAL_CHANNEL, "Booted\n");
    }
 
@@ -95,7 +107,7 @@ implementation{
 
 
    event void CommandHandler.printNeighbors() {
-
+      call NeighborDiscovery.printNeighbors();
    }
 
    event void CommandHandler.neighborDiscovery() {

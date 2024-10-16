@@ -1,3 +1,4 @@
+#include <Timer.h>
 #include "../../includes/packet.h"
 #include "../../includes/sendInfo.h"
 #include "../../includes/channels.h"
@@ -18,7 +19,8 @@ module NeighborDiscoveryP {
     uses interface Timer<TMilli> as sendTimer;
     uses interface SimpleSend;
     uses interface Packet;
-    uses interface Hashmap<uint16_t> as SeqNoMap;
+    uses interface Hashmap<uint16_t> as NeighborMap;
+    uses interface LinkStateRouting as LinkState;
 }
 
 implementation {
@@ -50,8 +52,8 @@ implementation {
         uint8_t payload[] = {};
         uint8_t ttl = 1;
 
-        if (!call SeqNoMap.contains(NEIGHBOR_DISCOVERY_PACKET->src)) {
-            call SeqNoMap.insert(NEIGHBOR_DISCOVERY_PACKET->src, NEIGHBOR_DISCOVERY_PACKET->seq);
+        if (!call NeighborMap.contains(NEIGHBOR_DISCOVERY_PACKET->src)) {
+            call NeighborMap.insert(NEIGHBOR_DISCOVERY_PACKET->src, NEIGHBOR_DISCOVERY_PACKET->seq);
             
             makePack(&localNeighborReplyPacket, TOS_NODE_ID, NEIGHBOR_DISCOVERY_PACKET->src, ttl, PROTOCOL_NEIGHBOR_REPLY, NEIGHBOR_DISCOVERY_PACKET->seq, payload, 0);
             
@@ -60,9 +62,9 @@ implementation {
             dbg(NEIGHBOR_CHANNEL, "NEIGHBOR REPLY SENT FROM NODE %hhu TO NODE %hhu \n", TOS_NODE_ID, NEIGHBOR_DISCOVERY_PACKET->src);
 
         } else {
-            uint16_t lastSeq = call SeqNoMap.get(NEIGHBOR_DISCOVERY_PACKET->src);
+            uint16_t lastSeq = call NeighborMap.get(NEIGHBOR_DISCOVERY_PACKET->src);
             if (NEIGHBOR_DISCOVERY_PACKET->seq > lastSeq) {
-                call SeqNoMap.insert(NEIGHBOR_DISCOVERY_PACKET->src, NEIGHBOR_DISCOVERY_PACKET->seq);
+                call NeighborMap.insert(NEIGHBOR_DISCOVERY_PACKET->src, NEIGHBOR_DISCOVERY_PACKET->seq);
                 
                 makePack(&localNeighborReplyPacket, TOS_NODE_ID, NEIGHBOR_DISCOVERY_PACKET->src, ttl, PROTOCOL_NEIGHBOR_REPLY, NEIGHBOR_DISCOVERY_PACKET->seq, payload, 0);
                 call SimpleSend.send(localNeighborReplyPacket, NEIGHBOR_DISCOVERY_PACKET->src);
@@ -112,5 +114,17 @@ implementation {
             }
         }
         return 0;
+    }
+
+     command void NeighborDiscovery.printNeighbors() {
+        uint16_t i = 0;
+        uint32_t* keys = call NeighborMap.getKeys();    
+        // Print neighbors
+        dbg(NEIGHBOR_CHANNEL, "Printing Neighbors:\n");
+        for(; i < call NeighborMap.size(); i++) {
+            if(keys[i] != 0) {
+                dbg(NEIGHBOR_CHANNEL, "\tNeighbor: %d\n", keys[i]);
+            }
+        }
     }
 }

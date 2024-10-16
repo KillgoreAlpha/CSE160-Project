@@ -13,6 +13,15 @@ module FloodingP {
 implementation {
     uint16_t sequence_number = 0;
 
+    command void Flooding.ping(uint16_t destination, uint8_t *payload) {
+        dbg(FLOODING_CHANNEL, "PING EVENT \n");
+        dbg(FLOODING_CHANNEL, "SENDER %d\n", TOS_NODE_ID);
+        dbg(FLOODING_CHANNEL, "DEST %d\n", destination);
+        makePack(&sendPackage, TOS_NODE_ID, destination, 22, PROTOCOL_PING, sequenceNum, payload, PACKET_MAX_PAYLOAD_SIZE);
+        call Sender.send(sendPackage, AM_BROADCAST_ADDR);
+        sequenceNum++;
+    }
+
     command void Flooding.newFlood(uint16_t TARGET, uint8_t *payload) {
         pack packet;
         uint8_t TTL = MAX_TTL;
@@ -47,5 +56,10 @@ implementation {
             dbg(FLOODING_CHANNEL, "Forwarding flood packet from %d to %d, TTL %d\n", TOS_NODE_ID, packet->dest, packet->TTL);
             call SimpleSend.send(*packet, AM_BROADCAST_ADDR);
         }
+    }
+
+    command void Flooding.floodLSP(pack* myMsg) {
+        myMsg->seq = sequenceNum++;
+        call SimpleSend.send(sendPackage, AM_BROADCAST_ADDR);
     }
 }
