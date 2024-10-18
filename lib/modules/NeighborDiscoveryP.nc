@@ -11,6 +11,7 @@
 typedef struct neighbor {
     uint16_t id;
     uint16_t lastHeard;
+    uint16_t linkQuality;
 } neighbor_t;
 
 module NeighborDiscoveryP {
@@ -92,6 +93,7 @@ implementation {
         if (!found && neighborCount < MAX_NEIGHBORS) {
             neighbors[neighborCount].id = neighborId;
             neighbors[neighborCount].lastHeard = sequenceNumber;
+            neighbors[neighborCount].linkQuality = ;
             neighborCount++;
         }
     }
@@ -116,7 +118,13 @@ implementation {
         return 0;
     }
 
-     command void NeighborDiscovery.printNeighbors() {
+    command void NeighborDiscovery.getLinkQuality(uint16_t nodeId, uint16_t lastSample) {
+        uint8_t alpha;
+        
+        
+    }
+
+    command void NeighborDiscovery.printNeighbors() {
         uint16_t i = 0;
         uint32_t* keys = call NeighborMap.getKeys();    
         // Print neighbors
