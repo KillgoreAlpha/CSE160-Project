@@ -52,7 +52,7 @@ implementation{
    event void Boot.booted(){
       call AMControl.start();
       call NeighborDiscovery.start();
-      call Transport.start();
+      // call Transport.start();
       dbg(GENERAL_CHANNEL, "Booted\n");
    }
 

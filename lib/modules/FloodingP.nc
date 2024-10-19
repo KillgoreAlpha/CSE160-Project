@@ -14,12 +14,14 @@ implementation {
     uint16_t sequence_number = 0;
 
     command void Flooding.ping(uint16_t destination, uint8_t *payload) {
+        pack packet;
+
         dbg(FLOODING_CHANNEL, "PING EVENT \n");
         dbg(FLOODING_CHANNEL, "SENDER %d\n", TOS_NODE_ID);
         dbg(FLOODING_CHANNEL, "DEST %d\n", destination);
-        makePack(&sendPackage, TOS_NODE_ID, destination, 22, PROTOCOL_PING, sequenceNum, payload, PACKET_MAX_PAYLOAD_SIZE);
-        call Sender.send(sendPackage, AM_BROADCAST_ADDR);
-        sequenceNum++;
+        makePack(&packet, TOS_NODE_ID, destination, 22, PROTOCOL_PING, sequence_number++, payload, PACKET_MAX_PAYLOAD_SIZE);
+        call SimpleSend.send(packet, AM_BROADCAST_ADDR);
+        sequence_number++;
     }
 
     command void Flooding.newFlood(uint16_t TARGET, uint8_t *payload) {
@@ -58,8 +60,4 @@ implementation {
         }
     }
 
-    command void Flooding.floodLSP(pack* myMsg) {
-        myMsg->seq = sequenceNum++;
-        call SimpleSend.send(sendPackage, AM_BROADCAST_ADDR);
-    }
 }

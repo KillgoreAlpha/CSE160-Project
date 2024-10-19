@@ -4,9 +4,9 @@
 
 configuration NeighborDiscoveryC {
        provides interface NeighborDiscovery;
-   }
+}
 
-   implementation {
+implementation {
        components NeighborDiscoveryP;
        NeighborDiscovery = NeighborDiscoveryP.NeighborDiscovery;
 
@@ -20,5 +20,5 @@ configuration NeighborDiscoveryC {
        NeighborDiscoveryP.NeighborMap -> NeighborMapC;
 
         components LinkStateRoutingC;
-        NeighborDiscoveryP.LinkStateRouting -> LinkStateRoutingC
-   }
+        NeighborDiscoveryP.LinkStateRouting -> LinkStateRoutingC;
+}

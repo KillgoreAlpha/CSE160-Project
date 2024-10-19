@@ -2,13 +2,13 @@
 #include "../../includes/channels.h"
 #include "../../includes/packet.h"
 #include "../../includes/protocol.h"
-#include "../../includes/ls_protocol.h"
+#include "../../includes/constants.h"
 
 module LinkStateRoutingP {
     provides interface LinkStateRouting;
     
     uses interface SimpleSend as Sender;
-    uses interface MapList<uint16_t, uint16_t> as PacketsReceived;
+    uses interface HashmapC<uint16_t, uint16_t> as PacketsReceived;
     uses interface NeighborDiscovery as NeighborDiscovery;
     uses interface Flooding as Flooding;
     uses interface Timer<TMilli> as LSRTimer;
@@ -16,7 +16,6 @@ module LinkStateRoutingP {
 }
 
 implementation {
-
     typedef struct {
         uint8_t nextHop;
         uint8_t cost;
@@ -27,8 +26,8 @@ implementation {
         uint8_t cost;
     } LSP;
 
-    uint8_t linkState[LS_MAX_ROUTES][LS_MAX_ROUTES];
-    Route routingTable[LS_MAX_ROUTES];
+    uint8_t linkState[LINK_STATE_MAX_ROUTES][LINK_STATE_MAX_ROUTES];
+    Route routingTable[LINK_STATE_MAX_ROUTES];
     uint16_t numKnownNodes = 0;
     uint16_t numRoutes = 0;
     uint16_t sequenceNum = 0;
@@ -77,7 +76,7 @@ implementation {
             dbg(ROUTING_CHANNEL, "PING_REPLY Packet has reached destination %d!!!\n", TOS_NODE_ID);
             return;
         }
-        if(routingTable[myMsg->dest].cost < LS_MAX_COST) {
+        if(routingTable[myMsg->dest].cost < LINK_STATE_MAX_COST) {
             nextHop = routingTable[myMsg->dest].nextHop;
             dbg(ROUTING_CHANNEL, "Node %d routing packet through %d\n", TOS_NODE_ID, nextHop);
             logPack(myMsg);
@@ -105,9 +104,9 @@ implementation {
 
     command void LinkStateRouting.handleNeighborLost(uint16_t lostNeighbor) {
         dbg(ROUTING_CHANNEL, "Neighbor lost %u\n", lostNeighbor);
-        if(linkState[TOS_NODE_ID][lostNeighbor] != LS_MAX_COST) {
-            linkState[TOS_NODE_ID][lostNeighbor] = LS_MAX_COST;
-            linkState[lostNeighbor][TOS_NODE_ID] = LS_MAX_COST;
+        if(linkState[TOS_NODE_ID][lostNeighbor] != LINK_STATE_MAX_COST) {
+            linkState[TOS_NODE_ID][lostNeighbor] = LINK_STATE_MAX_COST;
+            linkState[lostNeighbor][TOS_NODE_ID] = LINK_STATE_MAX_COST;
             numKnownNodes--;
             removeRoute(lostNeighbor);
         }
@@ -130,27 +129,27 @@ implementation {
     command void LinkStateRouting.printRouteTable() {
         uint16_t i;
         dbg(ROUTING_CHANNEL, "DEST  HOP  COST\n");
-        for(i = 1; i < LS_MAX_ROUTES; i++) {
-            if(routingTable[i].cost != LS_MAX_COST)
+        for(i = 1; i < LINK_STATE_MAX_ROUTES; i++) {
+            if(routingTable[i].cost != LINK_STATE_MAX_COST)
                 dbg(ROUTING_CHANNEL, "%4d%5d%6d\n", i, routingTable[i].nextHop, routingTable[i].cost);
         }
     }
 
     void initilizeRoutingTable() {
         uint16_t i, j;
-        for(i = 0; i < LS_MAX_ROUTES; i++) {
+        for(i = 0; i < LINK_STATE_MAX_ROUTES; i++) {
             routingTable[i].nextHop = 0;
-            routingTable[i].cost = LS_MAX_COST;
+            routingTable[i].cost = LINK_STATE_MAX_COST;
         }
-        for(i = 0; i < LS_MAX_ROUTES; i++) {
+        for(i = 0; i < LINK_STATE_MAX_ROUTES; i++) {
             linkState[i][0] = 0;
         }
-        for(i = 0; i < LS_MAX_ROUTES; i++) {
+        for(i = 0; i < LINK_STATE_MAX_ROUTES; i++) {
             linkState[0][i] = 0;
         }
-        for(i = 1; i < LS_MAX_ROUTES; i++) {
-            for(j = 1; j < LS_MAX_ROUTES; j++) {
-                linkState[i][j] = LS_MAX_COST;
+        for(i = 1; i < LINK_STATE_MAX_ROUTES; i++) {
+            for(j = 1; j < LINK_STATE_MAX_ROUTES; j++) {
+                linkState[i][j] = LINK_STATE_MAX_COST;
             }
         }
         routingTable[TOS_NODE_ID].nextHop = TOS_NODE_ID;
@@ -166,9 +165,9 @@ implementation {
         bool isStateUpdated = FALSE;
         for(i = 0; i < 10; i++) {
             if(linkState[myMsg->src][lsp[i].neighbor] != lsp[i].cost) {
-                if(linkState[myMsg->src][lsp[i].neighbor] == LS_MAX_COST) {
+                if(linkState[myMsg->src][lsp[i].neighbor] == LINK_STATE_MAX_COST) {
                     numKnownNodes++;
-                } else if(lsp[i].cost == LS_MAX_COST) {
+                } else if(lsp[i].cost == LINK_STATE_MAX_COST) {
                     numKnownNodes--;
                 }
                 linkState[myMsg->src][lsp[i].neighbor] = lsp[i].cost;
@@ -194,7 +193,7 @@ implementation {
         if(lostNeighbor != 0) {
             dbg(ROUTING_CHANNEL, "Sending out lost neighbor %u\n", lostNeighbor);
             linkStatePayload[counter].neighbor = lostNeighbor;
-            linkStatePayload[counter].cost = LS_MAX_COST;
+            linkStatePayload[counter].cost = LINK_STATE_MAX_COST;
             i++;
             counter++;
         }
@@ -205,7 +204,7 @@ implementation {
             counter++;
             if(counter == 10 || i == neighborsListSize-1) {
                 // Send LSP to each neighbor                
-                makePack(&routePack, TOS_NODE_ID, 0, LS_TTL, PROTOCOL_LS, sequenceNum++, &linkStatePayload, sizeof(linkStatePayload));
+                makePack(&routePack, TOS_NODE_ID, 0, LINK_STATE_TTL, PROTOCOL_LINK_STATE, sequenceNum++, &linkStatePayload, sizeof(linkStatePayload));
                 call Sender.send(routePack, AM_BROADCAST_ADDR);
                 // Zero the array
                 while(counter > 0) {
@@ -219,29 +218,29 @@ implementation {
 
     void djikstra() {
         uint16_t i = 0;
-        uint8_t currentNode = TOS_NODE_ID, minCost = LS_MAX_COST, nextNode = 0, prevNode = 0;
-        uint8_t prev[LS_MAX_ROUTES];
-        uint8_t cost[LS_MAX_ROUTES];
-        bool visited[LS_MAX_ROUTES];
+        uint8_t currentNode = TOS_NODE_ID, minCost = LINK_STATE_MAX_COST, nextNode = 0, prevNode = 0;
+        uint8_t prev[LINK_STATE_MAX_ROUTES];
+        uint8_t cost[LINK_STATE_MAX_ROUTES];
+        bool visited[LINK_STATE_MAX_ROUTES];
         uint16_t count = numKnownNodes;
-        for(i = 0; i < LS_MAX_ROUTES; i++) {
-            cost[i] = LS_MAX_COST;
+        for(i = 0; i < LINK_STATE_MAX_ROUTES; i++) {
+            cost[i] = LINK_STATE_MAX_COST;
             prev[i] = 0;
             visited[i] = FALSE;
         }
         cost[currentNode] = 0;
         prev[currentNode] = 0;
         while(TRUE) {
-            for(i = 1; i < LS_MAX_ROUTES; i++) {
-                if(i != currentNode && linkState[currentNode][i] < LS_MAX_COST && cost[currentNode] + linkState[currentNode][i] < cost[i]) {
+            for(i = 1; i < LINK_STATE_MAX_ROUTES; i++) {
+                if(i != currentNode && linkState[currentNode][i] < LINK_STATE_MAX_COST && cost[currentNode] + linkState[currentNode][i] < cost[i]) {
                     cost[i] = cost[currentNode] + linkState[currentNode][i];
                     prev[i] = currentNode;
                 }
             }
             visited[currentNode] = TRUE;            
-            minCost = LS_MAX_COST;
+            minCost = LINK_STATE_MAX_COST;
             nextNode = 0;
-            for(i = 1; i < LS_MAX_ROUTES; i++) {
+            for(i = 1; i < LINK_STATE_MAX_ROUTES; i++) {
                 if(cost[i] < minCost && !visited[i]) {
                     minCost = cost[i];
                     nextNode = i;
@@ -253,11 +252,11 @@ implementation {
             }
         }
         // NEED: add route to table
-        for(i = 1; i < LS_MAX_ROUTES; i++) {
+        for(i = 1; i < LINK_STATE_MAX_ROUTES; i++) {
             if(i == TOS_NODE_ID) {
                 continue;
             }
-            if(cost[i] != LS_MAX_COST) {
+            if(cost[i] != LINK_STATE_MAX_COST) {
                 prevNode = i;
                 while(prev[prevNode] != TOS_NODE_ID) {
                     prevNode = prev[prevNode];
@@ -279,16 +278,8 @@ implementation {
 
     void removeRoute(uint8_t dest) {
         routingTable[dest].nextHop = 0;
-        routingTable[dest].cost = LS_MAX_COST;
+        routingTable[dest].cost = LINK_STATE_MAX_COST;
         numRoutes--;
     }
-
-    void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t protocol, uint16_t seq, void* payload, uint8_t length) {
-        Package->src = src;
-        Package->dest = dest;
-        Package->TTL = TTL;
-        Package->seq = seq;
-        Package->protocol = protocol;
-        memcpy(Package->payload, payload, length);
-    }                            
+                     
 }

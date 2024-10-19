@@ -5,7 +5,7 @@
 #define TICKS 1024
 
 // Topology and Network Constants
-#define MAX_NODES 50
+#define MAX_NODES 64
 
 // Link State Constants
 #define LINK_STATE_MAX_ROUTES 256
