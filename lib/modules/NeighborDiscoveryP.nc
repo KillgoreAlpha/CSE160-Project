@@ -10,6 +10,7 @@
 
 typedef struct neighbor {
     uint16_t id;
+    bool isActive;
     uint16_t lastHeard;
     uint16_t linkQuality;
 } neighbor_t;
