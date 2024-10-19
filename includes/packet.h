@@ -11,6 +11,7 @@
 
 enum{
 	PACKET_HEADER_LENGTH = 8,
+	FRAME_HEADER_LENGTH = 8,
 	PACKET_MAX_PAYLOAD_SIZE = 28 - PACKET_HEADER_LENGTH,
 	MAX_TTL = 32
 };
@@ -34,13 +35,26 @@ typedef nx_struct frame{
 	nx_uint8_t payload[PACKET_MAX_PAYLOAD_SIZE];
 }frame;
 
-typedef nx_struct packet{
+typedef nx_struct IPpacket{
 	nx_uint16_t dest;
 	nx_uint16_t src;
 	nx_uint16_t seq;		//Sequence Number
 	nx_uint8_t TTL;			//Time to Live
 	nx_uint8_t protocol;
 	nx_uint8_t payload[PACKET_MAX_PAYLOAD_SIZE];
+}packet;
+
+typedef nx_struct TCPpacket{
+	nx_uint16_t src;
+	nx_uint16_t dest;
+	nx_uint32_t seq;
+	nx_uint32_t ack;
+	nx_uint8_t offset;
+	nx_uint16_t flags;
+	nx_uint16_t window;
+	nx_uint16_t checksum;
+	nx_uint16_t urgentptr;
+	nx_uint8_t* payload[PACKET_MAX_PAYLOAD_SIZE];
 }packet;
 
 
@@ -78,7 +92,7 @@ void makeLinkPack(frame *Frame, uint16_t src, uint16_t dest, uint16_t TTL, uint1
 	memcpy(Frame->payload, payload, length);
 }
 
-void makeIPPack(packet *Packet, version, header_length, uint8_t service, uint16_t total_length, uint16_t id, flags, offset, uint8_t TTL, uint8_t protocol, uint16_t checksum, uint32_t src, uint32_t dest, uint8_t* payload){
+void makeIPPack(packet *Packet, uint8_t version, header_length, uint8_t service, uint16_t total_length, uint16_t id, flags, offset, uint8_t TTL, uint8_t protocol, uint16_t checksum, uint32_t src, uint32_t dest, uint8_t* payload){
 	Packet->src = src;
 	Packet->dest = dest;
 	Packet->TTL = TTL;
@@ -87,7 +101,7 @@ void makeIPPack(packet *Packet, version, header_length, uint8_t service, uint16_
 	memcpy(Packet->payload, payload, length);
 }
 
-void makeTCPPack(pack *Packet, uint16_t src, uint16_t dest, uint32_t seq, uint32_t ack, uint4_t offset, uint16_t flags, uint16_t window, uint8_t* payload, uint8_t length){
+void makeTCPPack(pack *Packet, uint16_t src, uint16_t dest, uint32_t seq, uint32_t ack, uint8_t offset, uint16_t flags, uint16_t window, uint16_t checksum, uint16_t urgentptr, uint8_t* payload){
 	Packet->src = src;
 	Packet->dest = dest;
 	Packet->seq = seq;
