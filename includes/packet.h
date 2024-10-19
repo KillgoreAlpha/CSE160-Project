@@ -8,13 +8,14 @@
 
 #include "protocol.h"
 #include "channels.h"
+#include "constants.h"
 
 enum{
+	// ints represent number of bytes
 	FRAME_HEADER_LENGTH = 8,
 	FRAME_MAX_PAYLOAD_SIZE = MTU - FRAME_HEADER_LENGTH,
 	PACKET_HEADER_LENGTH = 22,
-	PACKET_MAX_PAYLOAD_SIZE = FRAME_MAX_PAYLOAD_SIZE - PACKET_HEADER_LENGTH,
-	MAX_TTL = 32
+	PACKET_MAX_PAYLOAD_SIZE = FRAME_MAX_PAYLOAD_SIZE - PACKET_HEADER_LENGTH
 };
 
 typedef nx_struct pack{
@@ -29,8 +30,8 @@ typedef nx_struct pack{
 typedef nx_struct frame{
 	nx_uint16_t dest;
 	nx_uint16_t src;
-	nx_uint16_t seq;		//Sequence Number
-	nx_uint8_t TTL;			//Time to Live
+	nx_uint16_t seq;
+	nx_uint8_t TTL;
 	nx_uint8_t protocol;
 	nx_uint8_t payload[FRAME_MAX_PAYLOAD_SIZE];
 }frame;
