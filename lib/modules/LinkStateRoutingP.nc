@@ -33,7 +33,6 @@ implementation {
     uint16_t sequenceNum = 0;
     pack routePack;
 
-    void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t protocol, uint16_t seq, void* payload, uint8_t length);
     void initilizeRoutingTable();
     bool updateState(pack* myMsg);
     bool updateRoute(uint8_t dest, uint8_t nextHop, uint8_t cost);

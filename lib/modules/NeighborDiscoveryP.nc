@@ -40,12 +40,22 @@ implementation {
     event void sendTimer.fired() {
         uint8_t payload[] = {};
         uint8_t ttl = 1;
+        uint8_t i;
 
-        makeLinkPack(&localNeighborDiscoveryPacket, TOS_NODE_ID, AM_BROADCAST_ADDR, ttl, PROTOCOL_NEIGHBOR, sequenceNumber, payload, 0);
+        makePack(&localNeighborDiscoveryPacket, TOS_NODE_ID, AM_BROADCAST_ADDR, ttl, PROTOCOL_NEIGHBOR, sequenceNumber, payload, 0);
         
         call SimpleSend.send(localNeighborDiscoveryPacket, AM_BROADCAST_ADDR);
         
         dbg(NEIGHBOR_CHANNEL, "NEIGHBOR DISCOVERY SENT FROM NODE %hhu \n", TOS_NODE_ID);
+
+        for (i = 0; i < neighborCount; i++) {
+            if ((sequenceNumber - neighbors[i].lastHeard) > 3) {
+                neighbors[i].isActive = FALSE;
+                // Send neighbor dropped event
+                //
+                //
+            }
+        }
 
         sequenceNumber++;
     }
@@ -57,7 +67,7 @@ implementation {
         if (!call NeighborMap.contains(NEIGHBOR_DISCOVERY_PACKET->src)) {
             call NeighborMap.insert(NEIGHBOR_DISCOVERY_PACKET->src, NEIGHBOR_DISCOVERY_PACKET->seq);
             
-            makeLinkPack(&localNeighborReplyPacket, TOS_NODE_ID, NEIGHBOR_DISCOVERY_PACKET->src, ttl, PROTOCOL_NEIGHBOR_REPLY, NEIGHBOR_DISCOVERY_PACKET->seq, payload, 0);
+            makePack(&localNeighborReplyPacket, TOS_NODE_ID, NEIGHBOR_DISCOVERY_PACKET->src, ttl, PROTOCOL_NEIGHBOR_REPLY, NEIGHBOR_DISCOVERY_PACKET->seq, payload, 0);
             
             call SimpleSend.send(localNeighborReplyPacket, NEIGHBOR_DISCOVERY_PACKET->src);
             
@@ -68,7 +78,7 @@ implementation {
             if (NEIGHBOR_DISCOVERY_PACKET->seq > lastSeq) {
                 call NeighborMap.insert(NEIGHBOR_DISCOVERY_PACKET->src, NEIGHBOR_DISCOVERY_PACKET->seq);
                 
-                makeLinkPack(&localNeighborReplyPacket, TOS_NODE_ID, NEIGHBOR_DISCOVERY_PACKET->src, ttl, PROTOCOL_NEIGHBOR_REPLY, NEIGHBOR_DISCOVERY_PACKET->seq, payload, 0);
+                makePack(&localNeighborReplyPacket, TOS_NODE_ID, NEIGHBOR_DISCOVERY_PACKET->src, ttl, PROTOCOL_NEIGHBOR_REPLY, NEIGHBOR_DISCOVERY_PACKET->seq, payload, 0);
                 call SimpleSend.send(localNeighborReplyPacket, NEIGHBOR_DISCOVERY_PACKET->src);
                 
                 dbg(NEIGHBOR_CHANNEL, "NEIGHBOR REPLY SENT FROM NODE %hhu TO NODE %hhu \n", TOS_NODE_ID, NEIGHBOR_DISCOVERY_PACKET->src);
@@ -86,6 +96,7 @@ implementation {
         for (i = 0; i < neighborCount; i++) {
             if (neighbors[i].id == neighborId) {
                 neighbors[i].lastHeard = sequenceNumber;
+                neighbors[i].isActive = TRUE;
                 found = TRUE;
                 break;
             }
@@ -94,7 +105,7 @@ implementation {
         if (!found && neighborCount < MAX_NEIGHBORS) {
             neighbors[neighborCount].id = neighborId;
             neighbors[neighborCount].lastHeard = sequenceNumber;
-            neighbors[neighborCount].linkQuality = ;
+            // neighbors[neighborCount].linkQuality = 0;
             neighborCount++;
         }
     }

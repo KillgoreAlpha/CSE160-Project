@@ -30,7 +30,7 @@ module Node{
    uses interface Flooding;
 
    // Project 2
-   uses interface LinkStateRouting as LinkState;
+   uses interface LinkStateRouting;
 
    // Project 3
 
@@ -127,12 +127,12 @@ implementation{
 
    event void CommandHandler.printLinkState(){
       dbg(GENERAL_CHANNEL, "ROUTE TABLE EVENT \n");
-      call LinkStateRouting.printLinkState();
+      // call LinkStateRouting.printLinkState();
    }
 
    event void CommandHandler.printDistanceVector(){
       dbg(GENERAL_CHANNEL, "DISTANCE VECTOR EVENT \n");
-      call DistanceVectorRouting.printRouteTable();
+      // call DistanceVectorRouting.printRouteTable();
    }
 
    event void CommandHandler.setTestServer(){}

@@ -7,5 +7,5 @@ interface NeighborDiscovery {
     command bool isNeighbor(uint16_t nodeId);
     command uint16_t getLastHeard(uint16_t nodeId);
     command void printNeighbors();
-    // command uint16_t getNeighborListSize();
+    command void getLinkQuality(uint16_t nodeId, uint16_t lastSample);
 }
