@@ -126,6 +126,11 @@ implementation {
         djikstra();
     }
 
+    command void LinkStateRouting.printLinkState() {
+
+    }
+    
+
     command void LinkStateRouting.printRouteTable() {
         uint16_t i;
         dbg(ROUTING_CHANNEL, "DEST  HOP  COST\n");

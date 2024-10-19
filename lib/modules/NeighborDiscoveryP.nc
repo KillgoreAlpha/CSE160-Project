@@ -40,7 +40,7 @@ implementation {
         uint8_t payload[] = {};
         uint8_t ttl = 1;
 
-        makePack(&localNeighborDiscoveryPacket, TOS_NODE_ID, AM_BROADCAST_ADDR, ttl, PROTOCOL_NEIGHBOR, sequenceNumber, payload, 0);
+        makeLinkPack(&localNeighborDiscoveryPacket, TOS_NODE_ID, AM_BROADCAST_ADDR, ttl, PROTOCOL_NEIGHBOR, sequenceNumber, payload, 0);
         
         call SimpleSend.send(localNeighborDiscoveryPacket, AM_BROADCAST_ADDR);
         
@@ -56,7 +56,7 @@ implementation {
         if (!call NeighborMap.contains(NEIGHBOR_DISCOVERY_PACKET->src)) {
             call NeighborMap.insert(NEIGHBOR_DISCOVERY_PACKET->src, NEIGHBOR_DISCOVERY_PACKET->seq);
             
-            makePack(&localNeighborReplyPacket, TOS_NODE_ID, NEIGHBOR_DISCOVERY_PACKET->src, ttl, PROTOCOL_NEIGHBOR_REPLY, NEIGHBOR_DISCOVERY_PACKET->seq, payload, 0);
+            makeLinkPack(&localNeighborReplyPacket, TOS_NODE_ID, NEIGHBOR_DISCOVERY_PACKET->src, ttl, PROTOCOL_NEIGHBOR_REPLY, NEIGHBOR_DISCOVERY_PACKET->seq, payload, 0);
             
             call SimpleSend.send(localNeighborReplyPacket, NEIGHBOR_DISCOVERY_PACKET->src);
             
@@ -67,7 +67,7 @@ implementation {
             if (NEIGHBOR_DISCOVERY_PACKET->seq > lastSeq) {
                 call NeighborMap.insert(NEIGHBOR_DISCOVERY_PACKET->src, NEIGHBOR_DISCOVERY_PACKET->seq);
                 
-                makePack(&localNeighborReplyPacket, TOS_NODE_ID, NEIGHBOR_DISCOVERY_PACKET->src, ttl, PROTOCOL_NEIGHBOR_REPLY, NEIGHBOR_DISCOVERY_PACKET->seq, payload, 0);
+                makeLinkPack(&localNeighborReplyPacket, TOS_NODE_ID, NEIGHBOR_DISCOVERY_PACKET->src, ttl, PROTOCOL_NEIGHBOR_REPLY, NEIGHBOR_DISCOVERY_PACKET->seq, payload, 0);
                 call SimpleSend.send(localNeighborReplyPacket, NEIGHBOR_DISCOVERY_PACKET->src);
                 
                 dbg(NEIGHBOR_CHANNEL, "NEIGHBOR REPLY SENT FROM NODE %hhu TO NODE %hhu \n", TOS_NODE_ID, NEIGHBOR_DISCOVERY_PACKET->src);

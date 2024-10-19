@@ -76,20 +76,16 @@ implementation{
          // Do checks for TTL
          switch(myProtocol){
             case(PROTOCOL_NEIGHBOR):
-               // Add neighbor to neighbors
-
                // Reply to Neighbor
                call NeighborDiscovery.reply(myMsg);
                break;
             case(PROTOCOL_NEIGHBOR_REPLY):
                // Read neighbor reply
                call NeighborDiscovery.readDiscovery(myMsg);
-               // 
                break;
             case(PROTOCOL_FLOOD):
                // Read neighbor reply
                call Flooding.forwardFlood(myMsg);
-               // 
                break;
          }
          return msg;
@@ -98,15 +94,19 @@ implementation{
       return msg;
    }
 
+   // event void CommandHandler.ping(uint16_t destination, uint8_t *payload){
+   //    dbg(GENERAL_CHANNEL, "PING EVENT \n");
+   //    makePack(&sendPackage, TOS_NODE_ID, destination, 0, 0, 0, payload, PACKET_MAX_PAYLOAD_SIZE);
+   //    call Sender.send(sendPackage, destination);
+   // }
 
    event void CommandHandler.ping(uint16_t destination, uint8_t *payload){
       dbg(GENERAL_CHANNEL, "PING EVENT \n");
-      makePack(&sendPackage, TOS_NODE_ID, destination, 0, 0, 0, payload, PACKET_MAX_PAYLOAD_SIZE);
-      call Sender.send(sendPackage, destination);
+      call Flooding.newFlood(destination, payload);
    }
 
-
    event void CommandHandler.printNeighbors() {
+      dbg(GENERAL_CHANNEL, "NEIGHBOR STATUS EVENT \n");
       call NeighborDiscovery.printNeighbors();
    }
 
@@ -120,11 +120,20 @@ implementation{
       call Flooding.newFlood(destination, payload);
    }
 
-   event void CommandHandler.printRouteTable(){}
+   event void CommandHandler.printRouteTable(){
+      dbg(GENERAL_CHANNEL, "ROUTE TABLE EVENT \n");
+      call LinkStateRouting.printRouteTable();
+   }
 
-   event void CommandHandler.printLinkState(){}
+   event void CommandHandler.printLinkState(){
+      dbg(GENERAL_CHANNEL, "ROUTE TABLE EVENT \n");
+      call LinkStateRouting.printLinkState();
+   }
 
-   event void CommandHandler.printDistanceVector(){}
+   event void CommandHandler.printDistanceVector(){
+      dbg(GENERAL_CHANNEL, "DISTANCE VECTOR EVENT \n");
+      call DistanceVectorRouting.printRouteTable();
+   }
 
    event void CommandHandler.setTestServer(){}
 
