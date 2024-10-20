@@ -6,6 +6,8 @@
 
 // Topology and Network Constants
 #define MAX_NODES 64
+#define MAX_NEIGHBORS 20
+#define INACTIVE_THRESHOLD 3
 #define MTU 1500
 #define MAX_TTL 32
 

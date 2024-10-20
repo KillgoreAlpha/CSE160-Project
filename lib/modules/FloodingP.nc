@@ -25,6 +25,7 @@ implementation {
     }
 
     command void Flooding.forwardFlood(pack* packet) {
+        // Create a 32 bit key using the src and seq
         uint32_t packet_key = (uint32_t)packet->src << 16 | packet->seq;
 
         if (packet->TTL == 0) {

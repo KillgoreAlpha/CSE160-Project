@@ -3,16 +3,13 @@
 #include "../../includes/sendInfo.h"
 #include "../../includes/channels.h"
 #include "../../includes/protocol.h"
-
-#define INACTIVE_THRESHOLD 5
-#define TICKS 1024
-#define MAX_NEIGHBORS 20
+#include "../../includes/constants.h"
 
 typedef struct neighbor {
     uint16_t id;
     bool isActive;
     uint16_t lastHeard;
-    uint16_t linkQuality;
+    float linkQuality;
 } neighbor_t;
 
 module NeighborDiscoveryP {
@@ -49,7 +46,11 @@ implementation {
         dbg(NEIGHBOR_CHANNEL, "NEIGHBOR DISCOVERY SENT FROM NODE %hhu \n", TOS_NODE_ID);
 
         for (i = 0; i < neighborCount; i++) {
-            if ((sequenceNumber - neighbors[i].lastHeard) > 3) {
+            if ((sequenceNumber - neighbors[i].lastHeard) > 1) {
+               neighbors[i].linkQuality = getLinkQuality(neighbors[i].id, 0.0, neighbors[i].linkQuality)
+            }
+
+            if ((sequenceNumber - neighbors[i].lastHeard) > INACTIVE_THRESHOLD && neighbors[i].isActive == TRUE) {
                 neighbors[i].isActive = FALSE;
                 // Send neighbor dropped event
                 //
@@ -97,6 +98,7 @@ implementation {
             if (neighbors[i].id == neighborId) {
                 neighbors[i].lastHeard = sequenceNumber;
                 neighbors[i].isActive = TRUE;
+                neighbors[i].linkQuality = getLinkQuality(neighborId, 1.0, neighbors[i].linkQuality)
                 found = TRUE;
                 break;
             }
@@ -105,7 +107,7 @@ implementation {
         if (!found && neighborCount < MAX_NEIGHBORS) {
             neighbors[neighborCount].id = neighborId;
             neighbors[neighborCount].lastHeard = sequenceNumber;
-            // neighbors[neighborCount].linkQuality = 0;
+            neighbors[neighborCount].linkQuality = 1.0;
             neighborCount++;
         }
     }
@@ -130,10 +132,10 @@ implementation {
         return 0;
     }
 
-    command void NeighborDiscovery.getLinkQuality(uint16_t nodeId, uint16_t lastSample) {
-        uint8_t alpha;
-        
-        
+    command float NeighborDiscovery.getLinkQuality(uint16_t nodeId, float newSample, float lastSample) {
+        float alpha = 0.1;
+        float link_quality = (alpha * newSample) + ((1 - alpha) * lastSample)
+        return link_quality;
     }
 
     command void NeighborDiscovery.printNeighbors() {
