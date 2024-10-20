@@ -30,6 +30,13 @@ implementation {
     neighbor_t neighbors[MAX_NEIGHBORS];
     uint8_t neighborCount = 0;
 
+
+    float getLinkQuality(uint16_t nodeId, float newSample, float lastSample) {
+        float alpha = 0.1;
+        float link_quality = (alpha * newSample) + ((1 - alpha) * lastSample);
+        return link_quality;
+    }
+
     command void NeighborDiscovery.start() {
         call sendTimer.startPeriodic(600 * TICKS);
     }
@@ -47,7 +54,7 @@ implementation {
 
         for (i = 0; i < neighborCount; i++) {
             if ((sequenceNumber - neighbors[i].lastHeard) > 1) {
-               neighbors[i].linkQuality = getLinkQuality(neighbors[i].id, 0.0, neighbors[i].linkQuality)
+               neighbors[i].linkQuality = getLinkQuality(neighbors[i].id, 0.0, neighbors[i].linkQuality);
             }
 
             if ((sequenceNumber - neighbors[i].lastHeard) > INACTIVE_THRESHOLD && neighbors[i].isActive == TRUE) {
@@ -98,7 +105,7 @@ implementation {
             if (neighbors[i].id == neighborId) {
                 neighbors[i].lastHeard = sequenceNumber;
                 neighbors[i].isActive = TRUE;
-                neighbors[i].linkQuality = getLinkQuality(neighborId, 1.0, neighbors[i].linkQuality)
+                neighbors[i].linkQuality = getLinkQuality(neighborId, 1.0, neighbors[i].linkQuality);
                 found = TRUE;
                 break;
             }
@@ -130,12 +137,6 @@ implementation {
             }
         }
         return 0;
-    }
-
-    command float NeighborDiscovery.getLinkQuality(uint16_t nodeId, float newSample, float lastSample) {
-        float alpha = 0.1;
-        float link_quality = (alpha * newSample) + ((1 - alpha) * lastSample)
-        return link_quality;
     }
 
     command void NeighborDiscovery.printNeighbors() {
