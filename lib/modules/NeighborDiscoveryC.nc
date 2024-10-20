@@ -1,6 +1,7 @@
 #include <Timer.h>
 #include "../../includes/CommandMsg.h"
 #include "../../includes/packet.h"
+#include "../../includes/constants.h"
 
 configuration NeighborDiscoveryC {
        provides interface NeighborDiscovery;
@@ -16,6 +17,6 @@ implementation {
        components new SimpleSendC(AM_PACK);
        NeighborDiscoveryP.SimpleSend -> SimpleSendC;
 
-       components new HashmapC(uint16_t, 20) as NeighborMapC;
+       components new HashmapC(uint16_t, MAX_NEIGHBORS) as NeighborMapC;
        NeighborDiscoveryP.NeighborMap -> NeighborMapC;
 }

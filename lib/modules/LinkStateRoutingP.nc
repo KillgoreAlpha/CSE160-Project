@@ -8,7 +8,7 @@ module LinkStateRoutingP {
     provides interface LinkStateRouting;
     
     uses interface SimpleSend as Sender;
-    uses interface HashmapC<uint16_t, uint16_t> as PacketsReceived;
+    uses interface MapList<uint16_t, uint16_t> as PacketsReceived;
     uses interface NeighborDiscovery as NeighborDiscovery;
     uses interface Flooding as Flooding;
     uses interface Timer<TMilli> as LSRTimer;
@@ -24,7 +24,7 @@ implementation {
     typedef struct {
         uint8_t neighbor;
         uint8_t cost;
-    } LSP;
+    } LinkStatePacket;
 
     uint8_t linkState[LINK_STATE_MAX_ROUTES][LINK_STATE_MAX_ROUTES];
     Route routingTable[LINK_STATE_MAX_ROUTES];
@@ -38,7 +38,7 @@ implementation {
     bool updateRoute(uint8_t dest, uint8_t nextHop, uint8_t cost);
     void addRoute(uint8_t dest, uint8_t nextHop, uint8_t cost);
     void removeRoute(uint8_t dest);
-    void sendLSP(uint8_t lostNeighbor);
+    void sendLinkStatePacket(uint8_t lostNeighbor);
     void handleForward(pack* myMsg);
     void djikstra();
 
@@ -52,7 +52,7 @@ implementation {
         if(call LSRTimer.isOneShot()) {
             call LSRTimer.startPeriodic(30000 + (uint16_t) (call Random.rand16()%5000));
         } else {
-            newFlood(AM_BROADCAST_ADDR, 0);
+            call Flooding.newFlood(AM_BROADCAST_ADDR, 0);
         }
     }
 
@@ -86,7 +86,7 @@ implementation {
         }
     }
 
-    command void LinkStateRouting.handleLS(pack* myMsg) {
+    command void LinkStateRouting.handleLinkState(pack* myMsg) {
         // Check seq number
         if(myMsg->src == TOS_NODE_ID || call PacketsReceived.containsVal(myMsg->src, myMsg->seq)) {
             return;
@@ -109,7 +109,7 @@ implementation {
             numKnownNodes--;
             removeRoute(lostNeighbor);
         }
-        sendLSP(lostNeighbor);
+        sendLinkStatePacket(lostNeighbor);
         djikstra();
     }
 
@@ -121,7 +121,7 @@ implementation {
             linkState[TOS_NODE_ID][neighbors[i]] = 1;
             linkState[neighbors[i]][TOS_NODE_ID] = 1;
         }
-        sendLSP(0);
+        sendLinkStatePacket(0);
         djikstra();
     }
 
@@ -165,7 +165,7 @@ implementation {
 
     bool updateState(pack* myMsg) {
         uint16_t i;
-        LSP *lsp = (LSP *)myMsg->payload;
+        LinkStatePacket *lsp = (LinkStatePacket *)myMsg->payload;
         bool isStateUpdated = FALSE;
         for(i = 0; i < 10; i++) {
             if(linkState[myMsg->src][lsp[i].neighbor] != lsp[i].cost) {
@@ -182,11 +182,11 @@ implementation {
         return isStateUpdated;
     }
 
-    void sendLSP(uint8_t lostNeighbor) {
+    void sendLinkStatePacket(uint8_t lostNeighbor) {
         uint32_t* neighbors = call NeighborDiscovery.getNeighbors();
         uint16_t neighborsListSize = call NeighborDiscovery.getNeighborListSize();
         uint16_t i = 0, counter = 0;
-        LSP linkStatePayload[10];
+        LinkStatePacket linkStatePayload[10];
         // Zero out the array
         for(i = 0; i < 10; i++) {
             linkStatePayload[i].neighbor = 0;
@@ -201,13 +201,13 @@ implementation {
             i++;
             counter++;
         }
-        // Add neighbors in groups of 10 and flood LSP to all neighbors
+        // Add neighbors in groups of 10 and flood LinkStatePacket to all neighbors
         for(; i < neighborsListSize; i++) {
             linkStatePayload[counter].neighbor = neighbors[i];
             linkStatePayload[counter].cost = 1;
             counter++;
             if(counter == 10 || i == neighborsListSize-1) {
-                // Send LSP to each neighbor                
+                // Send LinkStatePacket to each neighbor                
                 makePack(&routePack, TOS_NODE_ID, 0, LINK_STATE_TTL, PROTOCOL_LINK_STATE, sequenceNum++, &linkStatePayload, sizeof(linkStatePayload));
                 call Sender.send(routePack, AM_BROADCAST_ADDR);
                 // Zero the array

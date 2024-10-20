@@ -14,7 +14,7 @@ implementation {
     components new SimpleSendC(AM_PACK);
     LinkStateRoutingP.Sender -> SimpleSendC;
 
-    components new HashmapC(uint16_t, uint16_t, LINK_STATE_MAX_ROUTES, 32);
+    components new MapListC(uint16_t, uint16_t, LINK_STATE_MAX_ROUTES, 32);
     LinkStateRoutingP.PacketsReceived -> MapListC;
 
     components NeighborDiscoveryC;

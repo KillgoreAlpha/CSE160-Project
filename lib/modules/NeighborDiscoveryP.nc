@@ -150,4 +150,12 @@ implementation {
             }
         }
     }
+
+    command uint32_t* NeighborDiscovery.getNeighbors() {
+        return call NeighborMap.getKeys();
+    }
+
+    command uint16_t NeighborDiscovery.getNeighborListSize() {
+        return call NeighborMap.size();
+    }
 }
