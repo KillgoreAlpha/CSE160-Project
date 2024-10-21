@@ -37,7 +37,7 @@ implementation {
     }
 
     command void NeighborDiscovery.start() {
-        call sendTimer.startPeriodic(600 * TICKS);
+        call sendTimer.startPeriodic(30 * TICKS);
     }
 
     event void sendTimer.fired() {
@@ -49,7 +49,7 @@ implementation {
         
         call SimpleSend.send(localNeighborDiscoveryPacket, AM_BROADCAST_ADDR);
         
-        dbg(NEIGHBOR_CHANNEL, "NEIGHBOR DISCOVERY SENT FROM NODE %hhu \n", TOS_NODE_ID);
+        // dbg(NEIGHBOR_CHANNEL, "NEIGHBOR DISCOVERY SENT FROM NODE %hhu \n", TOS_NODE_ID);
 
         for (i = 0; i < neighborCount; i++) {
             if ((sequenceNumber - neighbors[i].lastHeard) > 1) {
@@ -77,7 +77,7 @@ implementation {
             
             call SimpleSend.send(localNeighborReplyPacket, NEIGHBOR_DISCOVERY_PACKET->src);
             
-            dbg(NEIGHBOR_CHANNEL, "NEIGHBOR REPLY SENT FROM NODE %hhu TO NODE %hhu \n", TOS_NODE_ID, NEIGHBOR_DISCOVERY_PACKET->src);
+            // dbg(NEIGHBOR_CHANNEL, "NEIGHBOR REPLY SENT FROM NODE %hhu TO NODE %hhu \n", TOS_NODE_ID, NEIGHBOR_DISCOVERY_PACKET->src);
 
         } else {
             uint16_t lastSeq = call NeighborMap.get(NEIGHBOR_DISCOVERY_PACKET->src);
@@ -87,7 +87,7 @@ implementation {
                 makePack(&localNeighborReplyPacket, TOS_NODE_ID, NEIGHBOR_DISCOVERY_PACKET->src, ttl, PROTOCOL_NEIGHBOR_REPLY, NEIGHBOR_DISCOVERY_PACKET->seq, payload, 0);
                 call SimpleSend.send(localNeighborReplyPacket, NEIGHBOR_DISCOVERY_PACKET->src);
                 
-                dbg(NEIGHBOR_CHANNEL, "NEIGHBOR REPLY SENT FROM NODE %hhu TO NODE %hhu \n", TOS_NODE_ID, NEIGHBOR_DISCOVERY_PACKET->src);
+                // dbg(NEIGHBOR_CHANNEL, "NEIGHBOR REPLY SENT FROM NODE %hhu TO NODE %hhu \n", TOS_NODE_ID, NEIGHBOR_DISCOVERY_PACKET->src);
             }
         }
     }
@@ -97,7 +97,7 @@ implementation {
         uint8_t i;
         bool found = FALSE;
         
-        dbg(NEIGHBOR_CHANNEL, "NEIGHBOR REPLY RECEIVED BY NODE %hhu FROM NODE %hhu \n", TOS_NODE_ID, NEIGHBOR_REPLY_PACKET->src);
+        // dbg(NEIGHBOR_CHANNEL, "NEIGHBOR REPLY RECEIVED BY NODE %hhu FROM NODE %hhu \n", TOS_NODE_ID, NEIGHBOR_REPLY_PACKET->src);
 
         for (i = 0; i < neighborCount; i++) {
             if (neighbors[i].id == neighborId) {
@@ -144,9 +144,10 @@ implementation {
         uint32_t* keys = call NeighborMap.getKeys();    
         // Print neighbors
         dbg(NEIGHBOR_CHANNEL, "Printing Neighbors:\n");
+        dbg(ROUTING_CHANNEL, "NODE  ACTV  LSTHRD  LINKQUAL\n");
         for(; i < call NeighborMap.size(); i++) {
             if(keys[i] != 0) {
-                dbg(NEIGHBOR_CHANNEL, "\tNeighbor: %d\n", keys[i]);
+                dbg(NEIGHBOR_CHANNEL, "%2d%6d%6d%10.2f\n", neighbors[i].id, neighbors[i].isActive, neighbors[i].lastHeard, neighbors[i].linkQuality);
             }
         }
     }

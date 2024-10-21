@@ -52,6 +52,7 @@ implementation{
    event void Boot.booted(){
       call AMControl.start();
       call NeighborDiscovery.start();
+      call LinkStateRouting.start();
       // call Transport.start();
       dbg(GENERAL_CHANNEL, "Booted\n");
    }
@@ -68,10 +69,10 @@ implementation{
    event void AMControl.stopDone(error_t err){}
 
    event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len){
-      dbg(GENERAL_CHANNEL, "Packet Received\n");
+      // dbg(GENERAL_CHANNEL, "Packet Received\n");
       if(len==sizeof(pack)){
          pack* myMsg=(pack*) payload;
-         dbg(GENERAL_CHANNEL, "Package Payload: %s\n", myMsg->payload);
+         // dbg(GENERAL_CHANNEL, "Packet Payload: %s\n", myMsg->payload);
          myProtocol = myMsg->protocol;
          // Do checks for TTL
          switch(myProtocol){
@@ -127,7 +128,7 @@ implementation{
 
    event void CommandHandler.printLinkState(){
       dbg(GENERAL_CHANNEL, "ROUTE TABLE EVENT \n");
-      // call LinkStateRouting.printLinkState();
+      call LinkStateRouting.printLinkState();
    }
 
    event void CommandHandler.printDistanceVector(){
