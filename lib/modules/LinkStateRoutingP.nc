@@ -209,7 +209,7 @@ implementation {
             linkStatePayload[counter].cost = 1;
             counter++;
             if (counter == 10 || i == neighborsListSize - 1) {
-                makePack(&routePack, TOS_NODE_ID, AM_BROADCAST_ADDR, LINK_STATE_TTL, PROTOCOL_LINK_STATE, sequenceNum++, &linkStatePayload, sizeof(linkStatePayload));
+                makePack(&routePack, TOS_NODE_ID, AM_BROADCAST_ADDR, LINK_STATE_TTL, PROTOCOL_LINK_STATE, sequenceNum++, linkStatePayload, sizeof(linkStatePayload));
                 call Flooding.newFlood(AM_BROADCAST_ADDR, (uint8_t*)&linkStatePayload);
                 while (counter > 0) {
                     counter--;
@@ -271,5 +271,19 @@ implementation {
                 removeRoute(i);
             }
         }
+    }
+
+    void addRoute(uint8_t dest, uint8_t nextHop, uint8_t cost) {
+        if(cost < routingTable[dest].cost) {
+            routingTable[dest].nextHop = nextHop;
+            routingTable[dest].cost = cost;
+            numRoutes++;
+        }
+    }
+
+    void removeRoute(uint8_t dest) {
+        routingTable[dest].nextHop = 0;
+        routingTable[dest].cost = LINK_STATE_MAX_COST;
+        numRoutes--;
     }
 }

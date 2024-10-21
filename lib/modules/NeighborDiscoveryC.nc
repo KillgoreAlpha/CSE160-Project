@@ -19,4 +19,7 @@ implementation {
 
        components new HashmapC(uint16_t, MAX_NEIGHBORS) as NeighborMapC;
        NeighborDiscoveryP.NeighborMap -> NeighborMapC;
+
+       components LinkStateRoutingC;
+       NeighborDiscoveryP.LinkStateRouting -> LinkStateRoutingC;
 }

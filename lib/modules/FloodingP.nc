@@ -2,6 +2,8 @@
 #include "../../includes/sendInfo.h"
 #include "../../includes/channels.h"
 #include "../../includes/protocol.h"
+#include "../../includes/constants.h"
+
 
 module FloodingP {
     provides interface Flooding;
@@ -19,7 +21,7 @@ implementation {
 
         dbg(FLOODING_CHANNEL, "Initiating new flood to node %d from %d \n", TARGET, TOS_NODE_ID);
 
-        makePack(&packet, TOS_NODE_ID, TARGET, TTL, PROTOCOL_FLOOD, sequence_number++, payload, PACKET_MAX_PAYLOAD_SIZE);
+        makePack(&packet, TOS_NODE_ID, TARGET, TTL, PROTOCOL_FLOOD, sequence_number++, payload, MTU);
         
         call Flooding.forwardFlood(&packet);
     }

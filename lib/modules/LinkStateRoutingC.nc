@@ -9,7 +9,7 @@ configuration LinkStateRoutingC {
 
 implementation {
     components LinkStateRoutingP;
-    LinkStateRouting = LinkStateRoutingP;
+    LinkStateRouting = LinkStateRoutingP.LinkStateRouting;
 
     components new SimpleSendC(AM_PACK);
     LinkStateRoutingP.Sender -> SimpleSendC;

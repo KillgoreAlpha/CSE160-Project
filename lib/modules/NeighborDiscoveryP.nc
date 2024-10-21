@@ -19,7 +19,7 @@ module NeighborDiscoveryP {
     uses interface SimpleSend;
     uses interface Packet;
     uses interface Hashmap<uint16_t> as NeighborMap;
-    uses interface LinkStateRouting as LinkState; // NEW: Added LinkStateRouting interface
+    uses interface LinkStateRouting; // NEW: Added LinkStateRouting interface
 }
 
 implementation {
@@ -59,7 +59,7 @@ implementation {
             if ((sequenceNumber - neighbors[i].lastHeard) > INACTIVE_THRESHOLD && neighbors[i].isActive == TRUE) {
                 neighbors[i].isActive = FALSE;
                 // NEW: Notify LinkStateRouting about lost neighbor
-                call LinkState.handleNeighborLost(neighbors[i].id);
+                call LinkStateRouting.handleNeighborLost(neighbors[i].id);
             }
         }
 
@@ -115,7 +115,7 @@ implementation {
             neighbors[neighborCount].linkQuality = 1.0;
             neighborCount++;
             // NEW: Notify LinkStateRouting about new neighbor
-            call LinkState.handleNeighborFound();
+            call LinkStateRouting.handleNeighborFound();
         }
     }
 

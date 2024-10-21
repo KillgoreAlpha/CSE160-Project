@@ -88,7 +88,7 @@ enum{
     AM_PACK=6
 };
 
-void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t protocol, uint16_t seq, uint8_t* payload, uint8_t length){
+void makePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL, uint16_t protocol, uint16_t seq, void* payload, uint8_t length){
     Package->src = src;
     Package->dest = dest;
     Package->TTL = TTL;
@@ -140,7 +140,7 @@ void makeLinkStatePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL,
     Package->src = src;
     Package->dest = dest;
     Package->TTL = TTL;
-    Package->protocol = PROTOCOL_LINKSTATE;
+    Package->protocol = PROTOCOL_LINK_STATE;
     Package->seq = 0;  // You might want to use a sequence number for link state updates
     memcpy(Package->payload, linkState, sizeof(LinkState));
 }
