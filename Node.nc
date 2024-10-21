@@ -100,9 +100,9 @@ implementation{
    //    call Sender.send(sendPackage, destination);
    // }
 
-   event void CommandHandler.ping(uint16_t destination, uint8_t *payload){
-      dbg(GENERAL_CHANNEL, "PING EVENT \n");
-      call Flooding.newFlood(destination, payload);
+   event void CommandHandler.ping(uint16_t destination, uint8_t *payload) {
+      //call LinkStateRouting.ping(destination, payload);
+      call Flooding.ping(destination, payload);
    }
 
    event void CommandHandler.printNeighbors() {
