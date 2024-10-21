@@ -143,7 +143,7 @@ void makeLinkStatePack(pack *Package, uint16_t src, uint16_t dest, uint16_t TTL,
     Package->src = src;
     Package->dest = dest;
     Package->TTL = TTL;
-    Package->protocol = PROTOCOL_LINK_STATE;
+    Package->protocol = PROTOCOL_LINKSTATE;
     Package->seq = 0;  // You might want to use a sequence number for link state updates
     memcpy(Package->payload, linkState, sizeof(LinkState));
 }

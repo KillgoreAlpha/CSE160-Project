@@ -88,6 +88,10 @@ implementation{
                // Read neighbor reply
                call Flooding.forwardFlood(myMsg);
                break;
+            case(PROTOCOL_LINKSTATE):
+               // Update link state and flood
+               call LinkStateRouting.handleLinkState(myMsg);
+               break;
          }
          return msg;
       }

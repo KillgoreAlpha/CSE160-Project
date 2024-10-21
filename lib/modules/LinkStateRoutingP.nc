@@ -209,7 +209,7 @@ implementation {
             linkStatePayload[counter].cost = 1;
             counter++;
             if (counter == 10 || i == neighborsListSize - 1) {
-                makePack(&routePack, TOS_NODE_ID, AM_BROADCAST_ADDR, LINK_STATE_TTL, PROTOCOL_LINK_STATE, sequenceNum++, linkStatePayload, sizeof(linkStatePayload));
+                makePack(&routePack, TOS_NODE_ID, AM_BROADCAST_ADDR, LINK_STATE_TTL, PROTOCOL_LINKSTATE, sequenceNum++, linkStatePayload, sizeof(linkStatePayload));
                 call Flooding.newFlood(AM_BROADCAST_ADDR, (uint8_t*)&linkStatePayload);
                 while (counter > 0) {
                     counter--;
