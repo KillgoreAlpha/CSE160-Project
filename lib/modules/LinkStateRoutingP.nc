@@ -134,8 +134,16 @@ implementation {
             
             // Update local link state with new neighbors
             for (i = 0; i < neighborsListSize; i++) {
-                linkState[TOS_NODE_ID][neighbors[i]] = 1 + (1 - (1 - call NeighborDiscovery.neighborQuality(neighbors[i])));
-                linkState[neighbors[i]][TOS_NODE_ID] = 1 + (1 - call NeighborDiscovery.neighborQuality(neighbors[i]));
+                float cost = call NeighborDiscovery.neighborQuality(neighbors[i]);
+                if (cost != 1) {
+                    linkState[TOS_NODE_ID][neighbors[i]] = 1 + (1 - cost);
+                    linkState[neighbors[i]][TOS_NODE_ID] = 1 + (1 - cost);
+                } else {
+                    linkState[TOS_NODE_ID][neighbors[i]] = 1;
+                    linkState[neighbors[i]][TOS_NODE_ID] = 1;
+                }
+
+                
             }
             
             // Broadcast updated link state
