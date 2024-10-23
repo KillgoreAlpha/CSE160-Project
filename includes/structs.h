@@ -3,8 +3,9 @@
 
 typedef struct neighbor_t {
     uint16_t id;
+    bool isActive;
     uint16_t lastHeard;
-    uint16_t timeDown;
-}neighbor_t;
+    float linkQuality;
+} neighbor_t;
 
 #endif

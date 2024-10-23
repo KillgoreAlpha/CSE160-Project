@@ -4,13 +4,7 @@
 #include "../../includes/channels.h"
 #include "../../includes/protocol.h"
 #include "../../includes/constants.h"
-
-typedef struct neighbor {
-    uint16_t id;
-    bool isActive;
-    uint16_t lastHeard;
-    float linkQuality;
-} neighbor_t;
+#include "../../includes/structs.h"
 
 module NeighborDiscoveryP {
     provides interface NeighborDiscovery;
