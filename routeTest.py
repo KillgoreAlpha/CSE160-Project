@@ -23,31 +23,167 @@ def main():
     s.addChannel(s.ROUTING_CHANNEL);
 
     s.runTime(20);
-    s.flood(1, 7, "I'm Flooding!")
-
+    # s.flood(1, 7, "I'm Flooding!")
 
     # After sending a ping, simulate a little to prevent collision.
-    s.runTime(1);
-    s.neighborDMP(7);
-    s.runTime(10);
-    s.moteOff(5);
-    s.runTime(10);
-    s.neighborDMP(7);
-    s.runTime(10);
-    s.moteOn(5);
-    s.runTime(10);
-    s.neighborDMP(7);
-    s.runTime(10);
-
     s.ping(1,10, "test");
-    s.runTime(100);
+    s.runTime(1000);
+
+    s.routeDMP(1);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(2);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(3);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(4);
+    s.runTime(5);
+    s.moteOn(5);
 
     s.routeDMP(5);
     s.runTime(5);
     s.moteOn(5);
+
     s.routeDMP(6);
     s.runTime(5);
     s.moteOn(5);
+
+    s.routeDMP(7);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(8);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(9);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(10);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(11);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(12);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(13);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(14);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(15);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(16);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(17);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(18);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(19);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.ping(1,10, "test");
+    s.runTime(1000);
+
+    s.routeDMP(1);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(2);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(3);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(4);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(5);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(6);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(7);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(8);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(9);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(10);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(11);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(12);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(13);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(14);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(15);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(16);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(17);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(18);
+    s.runTime(5);
+    s.moteOn(5);
+
+    s.routeDMP(19);
+    s.runTime(5);
+    s.moteOn(5);
+
 
 if __name__ == '__main__':
     main()
