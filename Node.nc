@@ -91,6 +91,7 @@ implementation{
             case(PROTOCOL_LINKSTATE):
                // Update link state and flood
                call LinkStateRouting.handleLinkState(myMsg);
+               // call LinkStateRouting.routePacket(myMsg);
                break;
          }
          return msg;

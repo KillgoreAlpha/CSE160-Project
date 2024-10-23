@@ -9,4 +9,5 @@ interface NeighborDiscovery {
     command void printNeighbors();
     command uint32_t* getNeighbors();
     command uint16_t getNeighborListSize();
+    command float neighborQuality(uint16_t nodeId);
 }

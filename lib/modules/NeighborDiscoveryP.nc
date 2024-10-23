@@ -129,6 +129,16 @@ implementation {
         return FALSE;
     }
 
+    command float NeighborDiscovery.neighborQuality(uint16_t nodeId) {
+        uint8_t i;
+        for (i = 0; i < neighborCount; i++) {
+            if (neighbors[i].id == nodeId) {
+                return neighbors[i].linkQuality;
+            }
+        }
+        return 0;
+    }
+
     command uint16_t NeighborDiscovery.getLastHeard(uint16_t nodeId) {
         uint8_t i;
         for (i = 0; i < neighborCount; i++) {
