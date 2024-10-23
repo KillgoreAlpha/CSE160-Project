@@ -13,7 +13,7 @@
 
 // Link State Constants
 #define LINK_STATE_MAX_ROUTES 256
-#define LINK_STATE_MAX_COST 16
+#define LINK_STATE_MAX_COST 256
 #define LINK_STATE_TTL 16
 
 

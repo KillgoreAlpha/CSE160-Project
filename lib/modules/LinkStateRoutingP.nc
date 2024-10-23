@@ -29,13 +29,15 @@ implementation {
 
     uint8_t linkState[LINK_STATE_MAX_ROUTES][LINK_STATE_MAX_ROUTES];
     Route routingTable[LINK_STATE_MAX_ROUTES];
+    LinkStatePacket linkStatePayload[10];
+    LinkStatePacket incomingLinkState[10];
     uint16_t numKnownNodes = 0;
     uint16_t numRoutes = 0;
     uint16_t sequenceNum = 0;
     pack routePack;
 
     void initializeRoutingTable();
-    bool updateState(pack* myMsg);
+    bool updateState(uint16_t incomingSrc);
     bool updateRoute(uint8_t dest, uint8_t nextHop, float cost);
     void addRoute(uint8_t dest, uint8_t nextHop, float cost);
     void removeRoute(uint8_t dest);
@@ -92,25 +94,31 @@ implementation {
     }
 
     command void LinkStateRouting.handleLinkState(pack* myMsg) {
+        uint16_t incomingSrc = myMsg->src;
+        uint16_t incomingSeq = myMsg->seq;
+        
+        memcpy(incomingLinkState, myMsg->payload, sizeof(LinkStatePacket) * 10);
+
         // Check if we've already seen this packet
-        if (myMsg->src == TOS_NODE_ID || call PacketsReceived.containsVal(myMsg->src, myMsg->seq)) {
+        if (incomingSrc == TOS_NODE_ID || call PacketsReceived.containsVal(incomingSrc, incomingSeq)) {
             return;
         }
         
         // Record that we've received this packet
-        call PacketsReceived.insertVal(myMsg->src, myMsg->seq);
+        call PacketsReceived.insertVal(incomingSrc, incomingSeq);
         
         // Update our link state if the packet contains new information
-        if (updateState(myMsg)) {
+        if (updateState(incomingSrc)) {
             dijkstra();  // Recalculate routes if state changed
         }
         
+        dbg(TRANSPORT_CHANNEL, "Node %hhu: Flooding Link State\n", TOS_NODE_ID);
         // Forward the flood using the Flooding interface
-        call Flooding.forwardFlood(myMsg);
+        call Flooding.floodLinkState(incomingLinkState);
     }
 
     command void LinkStateRouting.handleNeighborLost(uint16_t lostNeighbor) {
-            dbg(ROUTING_CHANNEL, "Node %d: Neighbor lost %u\n", TOS_NODE_ID, lostNeighbor);
+            dbg(ROUTING_CHANNEL, "Node %hhu: Neighbor lost %u\n", TOS_NODE_ID, lostNeighbor);
             
             // Update local link state
             if (linkState[TOS_NODE_ID][lostNeighbor] != LINK_STATE_MAX_COST) {
@@ -216,33 +224,33 @@ implementation {
             }
         }
         
-        // Print summary information
-        dbg(ROUTING_CHANNEL, "-------------------------------------------\n");
-        dbg(ROUTING_CHANNEL, "Total Routes: %d\n", numRoutes);
-        dbg(ROUTING_CHANNEL, "Known Nodes: %d\n", numKnownNodes);
-        dbg(ROUTING_CHANNEL, "===========================================\n\n");
+        // // Print summary information
+        // dbg(ROUTING_CHANNEL, "-------------------------------------------\n");
+        // dbg(ROUTING_CHANNEL, "Total Routes: %d\n", numRoutes);
+        // dbg(ROUTING_CHANNEL, "Known Nodes: %d\n", numKnownNodes);
+        // dbg(ROUTING_CHANNEL, "===========================================\n\n");
         
-        // Also print the link state table for verification
-        dbg(ROUTING_CHANNEL, "Link State Table:\n");
-        dbg(ROUTING_CHANNEL, "===========================================\n");
-        for (i = 1; i < LINK_STATE_MAX_ROUTES; i++) {
-            uint16_t j;
-            bool hasLinks = FALSE;
+        // // Also print the link state table for verification
+        // dbg(ROUTING_CHANNEL, "Link State Table:\n");
+        // dbg(ROUTING_CHANNEL, "===========================================\n");
+        // for (i = 1; i < LINK_STATE_MAX_ROUTES; i++) {
+        //     uint16_t j;
+        //     bool hasLinks = FALSE;
             
-            for (j = 1; j < LINK_STATE_MAX_ROUTES; j++) {
-                if (linkState[i][j] != LINK_STATE_MAX_COST) {
-                    if (!hasLinks) {
-                        dbg(ROUTING_CHANNEL, "Node %d connects to: ", i);
-                        hasLinks = TRUE;
-                    }
-                    dbg(ROUTING_CHANNEL, "[%d cost:%d] ", j, linkState[i][j]);
-                }
-            }
-            if (hasLinks) {
-                dbg(ROUTING_CHANNEL, "\n");
-            }
-        }
-        dbg(ROUTING_CHANNEL, "===========================================\n");
+        //     for (j = 1; j < LINK_STATE_MAX_ROUTES; j++) {
+        //         if (linkState[i][j] != LINK_STATE_MAX_COST) {
+        //             if (!hasLinks) {
+        //                 dbg(ROUTING_CHANNEL, "Node %d connects to: ", i);
+        //                 hasLinks = TRUE;
+        //             }
+        //             dbg(ROUTING_CHANNEL, "[%d cost:%d] ", j, linkState[i][j]);
+        //         }
+        //     }
+        //     if (hasLinks) {
+        //         dbg(ROUTING_CHANNEL, "\n");
+        //     }
+        // }
+        // dbg(ROUTING_CHANNEL, "===========================================\n");
     }
 
     void initializeRoutingTable() {
@@ -262,35 +270,34 @@ implementation {
         numRoutes = 1;     // Same for routes
     }
 
-    bool updateState(pack* myMsg) {
+    bool updateState(uint16_t incomingSrc) {
         uint16_t i;
-        LinkStatePacket* lsp = (LinkStatePacket*)myMsg->payload;
         bool isStateUpdated = FALSE;
         
         for (i = 0; i < 10; i++) {
-            if (lsp[i].neighbor == 0) continue; // Skip empty entries
+            if (incomingLinkState[i].neighbor == 0) continue; // Skip empty entries
             
             // Update both directions of the link
-            if (linkState[myMsg->src][lsp[i].neighbor] != lsp[i].cost) {
-                if (linkState[myMsg->src][lsp[i].neighbor] == LINK_STATE_MAX_COST) {
+            if (linkState[incomingSrc][incomingLinkState[i].neighbor] != incomingLinkState[i].cost) {
+                if (linkState[incomingSrc][incomingLinkState[i].neighbor] == LINK_STATE_MAX_COST) {
                     numKnownNodes++;
-                } else if (lsp[i].cost == LINK_STATE_MAX_COST) {
+                } else if (incomingLinkState[i].cost == LINK_STATE_MAX_COST) {
                     numKnownNodes--;
                 }
                 
-                linkState[myMsg->src][lsp[i].neighbor] = lsp[i].cost;
-                linkState[lsp[i].neighbor][myMsg->src] = lsp[i].cost;
+                linkState[incomingSrc][incomingLinkState[i].neighbor] = incomingLinkState[i].cost;
+                linkState[incomingLinkState[i].neighbor][incomingSrc] = incomingLinkState[i].cost;
                 isStateUpdated = TRUE;
                 
-                dbg(ROUTING_CHANNEL, "Updated link state: %d->%d = %.2f\n", 
-                    myMsg->src, lsp[i].neighbor, lsp[i].cost);
+                dbg(TRANSPORT_CHANNEL, "Updated link state: %hhu->%hhu = %.2f\n", 
+                    incomingSrc, incomingLinkState[i].neighbor, incomingLinkState[i].cost);
             }
         }
         
         // If we received new link state information, schedule a routing update
         if (isStateUpdated) {
             dbg(ROUTING_CHANNEL, "Link state updated from node %d, recalculating routes\n", 
-                myMsg->src);
+                incomingSrc);
         }
         
         return isStateUpdated;
@@ -305,7 +312,7 @@ implementation {
             // Initialize payload array
             for (i = 0; i < 10; i++) {
                 linkStatePayload[i].neighbor = 0;
-                linkStatePayload[i].cost = 0;
+                linkStatePayload[i].cost = 0.0;
             }
 
             // Add lost neighbor to payload if any
@@ -313,19 +320,20 @@ implementation {
                 dbg(ROUTING_CHANNEL, "Node %d: Broadcasting lost neighbor %u\n", 
                     TOS_NODE_ID, lostNeighbor);
                 linkStatePayload[counter].neighbor = lostNeighbor;
-                linkStatePayload[counter].cost = LINK_STATE_MAX_COST;
+                linkStatePayload[counter].cost = (float)LINK_STATE_MAX_COST;
                 counter++;
             }
 
             // Add current neighbors to payload
-            for (; i < neighborsListSize; i++) {
+            for (i = 0; i < neighborsListSize; i++) {
+                linkStatePayload[counter].cost = 1.0;
                 linkStatePayload[counter].neighbor = neighbors[i];
-                linkStatePayload[counter].cost = 1;
+                // dbg(ROUTING_CHANNEL, "Neighbor %hhu value is %.2f \n", linkStatePayload[counter].neighbor, linkStatePayload[counter].cost);
                 counter++;
                 
                 // When payload is full or we're at the last neighbor, send the packet
                 if (counter == 10 || i == neighborsListSize - 1) {
-                    call Flooding.newFlood(AM_BROADCAST_ADDR, (uint8_t*)&linkStatePayload);
+                    call Flooding.floodLinkState((uint8_t*)&linkStatePayload);
                     counter = 0; // Reset counter after sending
                 }
             }
@@ -404,10 +412,6 @@ implementation {
     }
 
     void addRoute(uint8_t dest, uint8_t nextHop, float cost) {
-        // Add route if:
-        // 1. We don't have a route to this destination yet (cost is MAX)
-        // 2. This is a better route than what we have
-        // 3. This is a new next hop for the same cost (for redundancy)
         if (routingTable[dest].cost == LINK_STATE_MAX_COST || 
             cost < routingTable[dest].cost ||
             (cost == routingTable[dest].cost && nextHop != routingTable[dest].nextHop)) {
@@ -419,7 +423,7 @@ implementation {
                 numRoutes++;
             }
             
-            dbg(ROUTING_CHANNEL, "Updated route to node %d: nextHop=%d, cost=%.2f\n", 
+            dbg(ROUTING_CHANNEL, "Updated route to node %hhu: nextHop=%hhu, cost=%.2f\n", 
                 dest, nextHop, cost);
         }
     }
