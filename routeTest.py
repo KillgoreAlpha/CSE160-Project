@@ -40,7 +40,7 @@ def main():
     s.runTime(10);
 
     s.ping(1,10, "test");
-    s.runTime(10);
+    s.runTime(100);
 
     s.routeDMP(5);
     s.runTime(5);

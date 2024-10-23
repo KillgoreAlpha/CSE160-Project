@@ -67,9 +67,6 @@ typedef nx_struct TCPpacket{
     nx_uint8_t payload[PACKET_MAX_PAYLOAD_SIZE];
 }TCPpacket;
 
-// Added for Project 2: Link State Routing
-#define MAX_NEIGHBORS 20  // Adjust this value based on your network size
-
 typedef nx_struct LinkState {
     nx_uint16_t node;
     nx_uint16_t neighbors[MAX_NEIGHBORS];

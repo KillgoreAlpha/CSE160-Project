@@ -157,7 +157,7 @@ def main():
     s.runTime(10);
     s.ping(1, 3, "Hi!");
     s.runTime(20);
-    s.flood(1, 7, "I'm Flooding!")
+    # s.flood(1, 7, "I'm Flooding!")
     s.runTime(60)
 
 if __name__ == '__main__':
