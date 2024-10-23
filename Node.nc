@@ -76,6 +76,14 @@ implementation{
          myProtocol = myMsg->protocol;
          // Do checks for TTL
          switch(myProtocol){
+            case(PROTOCOL_PING):
+               // Reply to Ping
+               // call NeighborDiscovery.reply(myMsg);
+               break;
+            case(PROTOCOL_PINGREPLY):
+               // Acknowlege Ping Reply
+               // call NeighborDiscovery.reply(myMsg);
+               break;
             case(PROTOCOL_NEIGHBOR):
                // Reply to Neighbor
                call NeighborDiscovery.reply(myMsg);
@@ -91,7 +99,6 @@ implementation{
             case(PROTOCOL_LINKSTATE):
                // Update link state and flood
                call LinkStateRouting.handleLinkState(myMsg);
-               // call LinkStateRouting.routePacket(myMsg);
                break;
          }
          return msg;

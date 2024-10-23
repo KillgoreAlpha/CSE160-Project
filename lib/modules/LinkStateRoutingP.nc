@@ -9,7 +9,7 @@ module LinkStateRoutingP {
     provides interface LinkStateRouting;
 
     uses interface SimpleSend as Sender;
-    uses interface MapList<uint16_t, uint16_t> as PacketsReceived;
+    uses interface Matrix<uint16_t, uint16_t> as PacketsReceived;
     uses interface NeighborDiscovery;
     uses interface Flooding;
     uses interface Timer<TMilli> as LSRTimer;
@@ -27,7 +27,7 @@ implementation {
         float cost;
     } LinkStatePacket;
 
-    uint8_t linkState[LINK_STATE_MAX_ROUTES][LINK_STATE_MAX_ROUTES];
+    float linkState[LINK_STATE_MAX_ROUTES][LINK_STATE_MAX_ROUTES];
     Route routingTable[LINK_STATE_MAX_ROUTES];
     LinkStatePacket linkStatePayload[10];
     LinkStatePacket incomingLinkState[10];
@@ -112,7 +112,7 @@ implementation {
             dijkstra();  // Recalculate routes if state changed
         }
         
-        dbg(TRANSPORT_CHANNEL, "Node %hhu: Flooding Link State\n", TOS_NODE_ID);
+        // dbg(ROUTING_CHANNEL, "Node %hhu: Flooding Link State\n", TOS_NODE_ID);
         // Forward the flood using the Flooding interface
         call Flooding.floodLinkState(incomingLinkState);
     }
@@ -121,9 +121,9 @@ implementation {
             dbg(ROUTING_CHANNEL, "Node %hhu: Neighbor lost %u\n", TOS_NODE_ID, lostNeighbor);
             
             // Update local link state
-            if (linkState[TOS_NODE_ID][lostNeighbor] != LINK_STATE_MAX_COST) {
-                linkState[TOS_NODE_ID][lostNeighbor] = LINK_STATE_MAX_COST;
-                linkState[lostNeighbor][TOS_NODE_ID] = LINK_STATE_MAX_COST;
+            if (linkState[TOS_NODE_ID][lostNeighbor] != (float)LINK_STATE_MAX_COST) {
+                linkState[TOS_NODE_ID][lostNeighbor] = (float)LINK_STATE_MAX_COST;
+                linkState[lostNeighbor][TOS_NODE_ID] = (float)LINK_STATE_MAX_COST;
                 numKnownNodes--;
                 removeRoute(lostNeighbor);
             }
@@ -166,7 +166,7 @@ implementation {
         dbg(ROUTING_CHANNEL, "Link State for Node %d:\n", TOS_NODE_ID);
         for (i = 0; i < LINK_STATE_MAX_ROUTES; i++) {
             for (j = 0; j < LINK_STATE_MAX_ROUTES; j++) {
-                if (linkState[i][j] != LINK_STATE_MAX_COST) {
+                if (linkState[i][j] != (float)LINK_STATE_MAX_COST) {
                     dbg(ROUTING_CHANNEL, "  %d -> %d: Cost %.2f\n", i, j, linkState[i][j]);
                 }
             }
@@ -185,7 +185,7 @@ implementation {
         dbg(ROUTING_CHANNEL, "-------------------------------------------\n");
         
         for (i = 1; i < LINK_STATE_MAX_ROUTES; i++) {
-            if (routingTable[i].cost != LINK_STATE_MAX_COST) {
+            if (routingTable[i].cost != (float)LINK_STATE_MAX_COST) {
                 // Initialize the path string with the source
                 sprintf(pathString, "%d", TOS_NODE_ID);
                 
@@ -199,7 +199,7 @@ implementation {
                         nextHop = routingTable[i].nextHop;
                         // Follow the path through intermediate nodes
                         for (j = 1; j < LINK_STATE_MAX_ROUTES; j++) {
-                            if (linkState[currentNode][j] < LINK_STATE_MAX_COST) {
+                            if (linkState[currentNode][j] < (float)LINK_STATE_MAX_COST) {
                                 nextHop = j;
                                 break;
                             }
@@ -257,15 +257,16 @@ implementation {
         uint16_t i;
         for (i = 0; i < LINK_STATE_MAX_ROUTES; i++) {
             routingTable[i].nextHop = 0;
-            routingTable[i].cost = LINK_STATE_MAX_COST;
+            routingTable[i].cost = (float)LINK_STATE_MAX_COST;
         }
         // Reset link state table
         for (i = 0; i < LINK_STATE_MAX_ROUTES; i++) {
             memset(linkState[i], LINK_STATE_MAX_COST, sizeof(linkState[i]));
+            // dbg(TRANSPORT_CHANNEL, "%u\n", sizeof(linkState[i]));
         }
         routingTable[TOS_NODE_ID].nextHop = TOS_NODE_ID;
-        routingTable[TOS_NODE_ID].cost = 0;
-        linkState[TOS_NODE_ID][TOS_NODE_ID] = 0;
+        routingTable[TOS_NODE_ID].cost = 0.0;
+        linkState[TOS_NODE_ID][TOS_NODE_ID] = 0.0;
         numKnownNodes = 1; // Initialize to 1 since this node is known
         numRoutes = 1;     // Same for routes
     }
@@ -279,9 +280,9 @@ implementation {
             
             // Update both directions of the link
             if (linkState[incomingSrc][incomingLinkState[i].neighbor] != incomingLinkState[i].cost) {
-                if (linkState[incomingSrc][incomingLinkState[i].neighbor] == LINK_STATE_MAX_COST) {
+                if (linkState[incomingSrc][incomingLinkState[i].neighbor] == (float)LINK_STATE_MAX_COST) {
                     numKnownNodes++;
-                } else if (incomingLinkState[i].cost == LINK_STATE_MAX_COST) {
+                } else if (incomingLinkState[i].cost == (float)LINK_STATE_MAX_COST) {
                     numKnownNodes--;
                 }
                 
@@ -289,16 +290,16 @@ implementation {
                 linkState[incomingLinkState[i].neighbor][incomingSrc] = incomingLinkState[i].cost;
                 isStateUpdated = TRUE;
                 
-                dbg(TRANSPORT_CHANNEL, "Updated link state: %hhu->%hhu = %.2f\n", 
-                    incomingSrc, incomingLinkState[i].neighbor, incomingLinkState[i].cost);
+                // dbg(ROUTING_CHANNEL, "Updated link state: %hhu->%hhu = %.2f\n", 
+                //     incomingSrc, incomingLinkState[i].neighbor, incomingLinkState[i].cost);
             }
         }
         
         // If we received new link state information, schedule a routing update
-        if (isStateUpdated) {
-            dbg(ROUTING_CHANNEL, "Link state updated from node %d, recalculating routes\n", 
-                incomingSrc);
-        }
+        // if (isStateUpdated) {
+        //     dbg(ROUTING_CHANNEL, "Link state updated from node %d, recalculating routes\n", 
+        //         incomingSrc);
+        // }
         
         return isStateUpdated;
     }
@@ -341,7 +342,7 @@ implementation {
 
     void dijkstra() {
         uint16_t i = 0;
-        uint8_t currentNode = TOS_NODE_ID, minCost = LINK_STATE_MAX_COST, nextNode = 0;
+        uint8_t currentNode = TOS_NODE_ID, minCost = (float)LINK_STATE_MAX_COST, nextNode = 0;
         uint8_t prev[LINK_STATE_MAX_ROUTES];
         float cost[LINK_STATE_MAX_ROUTES];
         bool visited[LINK_STATE_MAX_ROUTES];
@@ -349,7 +350,7 @@ implementation {
 
         // Initialize arrays
         for (i = 0; i < LINK_STATE_MAX_ROUTES; i++) {
-            cost[i] = LINK_STATE_MAX_COST;
+            cost[i] = (float)LINK_STATE_MAX_COST;
             prev[i] = 0;
             visited[i] = FALSE;
         }
@@ -360,7 +361,7 @@ implementation {
         while (count > 0) {
             // Find minimum cost paths from current node
             for (i = 1; i < LINK_STATE_MAX_ROUTES; i++) {
-                if (!visited[i] && linkState[currentNode][i] < LINK_STATE_MAX_COST) {
+                if (!visited[i] && linkState[currentNode][i] < (float)LINK_STATE_MAX_COST) {
                     float newCost = cost[currentNode] + linkState[currentNode][i];
                     if (newCost < cost[i]) {
                         cost[i] = newCost;
@@ -372,7 +373,7 @@ implementation {
             visited[currentNode] = TRUE;
             
             // Find next unvisited node with minimum cost
-            minCost = LINK_STATE_MAX_COST;
+            minCost = (float)LINK_STATE_MAX_COST;
             nextNode = 0;
             for (i = 1; i < LINK_STATE_MAX_ROUTES; i++) {
                 if (cost[i] < minCost && !visited[i]) {
@@ -412,14 +413,14 @@ implementation {
     }
 
     void addRoute(uint8_t dest, uint8_t nextHop, float cost) {
-        if (routingTable[dest].cost == LINK_STATE_MAX_COST || 
+        if (routingTable[dest].cost == (float)LINK_STATE_MAX_COST || 
             cost < routingTable[dest].cost ||
             (cost == routingTable[dest].cost && nextHop != routingTable[dest].nextHop)) {
             
             routingTable[dest].nextHop = nextHop;
             routingTable[dest].cost = cost;
             
-            if (routingTable[dest].cost == LINK_STATE_MAX_COST) {
+            if (routingTable[dest].cost == (float)LINK_STATE_MAX_COST) {
                 numRoutes++;
             }
             
@@ -429,9 +430,9 @@ implementation {
     }
 
     void removeRoute(uint8_t dest) {
-        if (routingTable[dest].cost != LINK_STATE_MAX_COST) {
+        if (routingTable[dest].cost != (float)LINK_STATE_MAX_COST) {
             routingTable[dest].nextHop = 0;
-            routingTable[dest].cost = LINK_STATE_MAX_COST;
+            routingTable[dest].cost = (float)LINK_STATE_MAX_COST;
             numRoutes = (numRoutes > 0) ? numRoutes - 1 : 0; // Ensure it doesn't go negative
         }
     }

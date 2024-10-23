@@ -1,4 +1,4 @@
-interface MapList<t, s> {
+interface Matrix<t, s> {
    command void insertVal(t key, s val);
    command void removeVal(t key, s val);
    command bool containsList(t key);

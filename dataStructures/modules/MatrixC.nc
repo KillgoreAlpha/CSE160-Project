@@ -1,7 +1,7 @@
 #include "../../includes/channels.h"
 
-generic module MapListC(typedef t @integer(), typedef s @integer(), uint16_t n, uint16_t k) {
-    provides interface MapList<t, s>;
+generic module MatrixC(typedef t @integer(), typedef s @integer(), uint16_t n, uint16_t k) {
+    provides interface Matrix<t, s>;
 }
 
 implementation {
@@ -15,13 +15,13 @@ implementation {
         uint16_t size;
     } List;
 
-    typedef struct MapListEntry {
+    typedef struct MatrixEntry {
         struct List list;
         t key;
-    } MapListEntry;
+    } MatrixEntry;
 
-    MapListEntry map[n];
-    MapListEntry* lru[n];
+    MatrixEntry map[n];
+    MatrixEntry* lru[n];
     uint16_t numofVals = 0;
 
 
@@ -38,7 +38,7 @@ implementation {
     }
 
     // LRU Functions
-    int lruContains(MapListEntry* e) {
+    int lruContains(MatrixEntry* e) {
         uint16_t i;
         if(numofVals == 0) { return -1; }
         for(i = numofVals-1; i > 0; i--) {
@@ -48,7 +48,7 @@ implementation {
         }
         return -1;
     }
-    void accessed(MapListEntry* e) {
+    void accessed(MatrixEntry* e) {
         uint16_t i;    int idx;
         idx = lruContains(e);
         if(idx > 0) {
@@ -65,7 +65,7 @@ implementation {
         lru[0] = e;
     }
     void evict(t key, s val) {
-        MapListEntry* e = lru[numofVals-1];
+        MatrixEntry* e = lru[numofVals-1];
         e->key = key;
         e->list.container[0] = val;
         e->list.size = 1;
@@ -176,11 +176,11 @@ implementation {
 
 	bool contains(List* l, s val) {
         uint16_t i;
-        dbg(MAPLIST_CHANNEL,"Checking list for val: %d\n", val);
+        dbg(MATRIX_CHANNEL,"Checking list for val: %d\n", val);
         if(!isEmpty(l)) {
             for(i = 0; i < l->size; i++) {
                 if(l->container[i] == val) {
-                    dbg(MAPLIST_CHANNEL,"List val: %d already present\n", l->container[i]);
+                    dbg(MATRIX_CHANNEL,"List val: %d already present\n", l->container[i]);
                     return TRUE;
                 }
             }
@@ -191,22 +191,22 @@ implementation {
     void print(List* l) {
         uint16_t i;
         if(isEmpty(l)) {
-            dbg(MAPLIST_CHANNEL,"List empty\n");
+            dbg(MATRIX_CHANNEL,"List empty\n");
             return;
         }
-        dbg(MAPLIST_CHANNEL,"Printing list. Size: %d\n", l->size);
+        dbg(MATRIX_CHANNEL,"Printing list. Size: %d\n", l->size);
         for(i = 0; i < l->size; i++) {
-            dbg(MAPLIST_CHANNEL,"\tList val: %d in MapList\n", l->container[i]);
+            dbg(MATRIX_CHANNEL,"\tList val: %d in Matrix\n", l->container[i]);
         }
     }
 
 /*******************************************************  
-**  MapList methods
+**  Matrix methods
 ********************************************************/
 
-    command void MapList.insertVal(t key, s val) {
+    command void Matrix.insertVal(t key, s val) {
         uint32_t i=0;	uint32_t j=0;
-        //dbg(MAPLIST_CHANNEL,"Inserting val into MapList, size: %d\n", map[j].list.size);
+        //dbg(MATRIX_CHANNEL,"Inserting val into Matrix, size: %d\n", map[j].list.size);
         do {
             // Generate a hash.
             j=hash(key, i);
@@ -233,7 +233,7 @@ implementation {
         }
     }
 
-    command void MapList.removeVal(t key, s val) {
+    command void Matrix.removeVal(t key, s val) {
         uint32_t i=0;	uint32_t j=0;
         do {
             j=hash(key, i);
@@ -245,13 +245,13 @@ implementation {
                 } else {
                     accessed(&map[j]);
                 }
-                dbg(MAPLIST_CHANNEL,"Removed val: %d into MapList\n", val);
+                dbg(MATRIX_CHANNEL,"Removed val: %d into Matrix\n", val);
             }
             i++;
         } while(i < HASH_MAX_SIZE);
     }    
 
-    command bool MapList.containsList(t key) {
+    command bool Matrix.containsList(t key) {
         uint32_t i=0;   uint32_t j=0;
         do {
             j=hash(key, i);
@@ -264,29 +264,29 @@ implementation {
         return FALSE;
     }
 
-    command bool MapList.containsVal(t key, s val) {
+    command bool Matrix.containsVal(t key, s val) {
         uint32_t i=0;   uint32_t j=0;        
-        //dbg(MAPLIST_CHANNEL,"Checking if list with key: %d contains val\n", key);
+        //dbg(MATRIX_CHANNEL,"Checking if list with key: %d contains val\n", key);
         do {
             j=hash(key, i);
             if(map[j].key == key) {
-                //dbg(MAPLIST_CHANNEL,"Checking if list for key: %d contains val\n", key);
+                //dbg(MATRIX_CHANNEL,"Checking if list for key: %d contains val\n", key);
                 accessed(&map[j]);
                 return contains(&map[j].list, val);
             }
             i++;
         } while(i < HASH_MAX_SIZE);
-        //dbg(MAPLIST_CHANNEL,"Didn't find key: %d\n", key);
+        //dbg(MATRIX_CHANNEL,"Didn't find key: %d\n", key);
         return FALSE;
     }
 
-    command bool MapList.isEmpty() {
+    command bool Matrix.isEmpty() {
         if(numofVals==0)
             return TRUE;
         return FALSE;
     }
 
-    command bool MapList.listIsEmpty(t key) {
+    command bool Matrix.listIsEmpty(t key) {
         uint32_t i=0;   uint32_t j=0;
         do {
             j=hash(key, i);
@@ -297,7 +297,7 @@ implementation {
         return FALSE;
     }
 
-    command void MapList.printList(t key) {
+    command void Matrix.printList(t key) {
         uint32_t i=0;   uint32_t j=0;
         do {
             j=hash(key, i);

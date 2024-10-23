@@ -36,6 +36,7 @@ class TestSim:
 
     # Personal Debuggin Channels for some of the additional models implemented.
     HASHMAP_CHANNEL="hashmap";
+    MATRIX_CHANNEL="matrix";
 
     # Initialize Vars
     numMote=0

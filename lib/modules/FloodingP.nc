@@ -27,8 +27,8 @@ implementation {
 
     command void Flooding.floodLinkState(uint8_t *payload) {
         pack packet;
-        dbg(ROUTING_CHANNEL, "LINK STATE EVENT \n");
-        dbg(ROUTING_CHANNEL, "SENDER %d\n", TOS_NODE_ID);
+        // dbg(ROUTING_CHANNEL, "LINK STATE EVENT \n");
+        // dbg(ROUTING_CHANNEL, "SENDER %d\n", TOS_NODE_ID);
         makePack(&packet, TOS_NODE_ID, AM_BROADCAST_ADDR, MAX_TTL, PROTOCOL_LINKSTATE, sequence_number, payload, PACKET_MAX_PAYLOAD_SIZE);
         call SimpleSend.send(packet, AM_BROADCAST_ADDR);
         sequence_number++;
