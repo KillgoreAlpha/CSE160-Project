@@ -8,7 +8,7 @@ def main():
     s.runTime(1);
 
     # Load the the layout of the network.
-    s.loadTopo("test_topo_1.topo");
+    s.loadTopo("circle.topo");
 
     # Add a noise model to all of the motes.
     s.loadNoise("no_noise.txt");
@@ -50,61 +50,61 @@ def main():
     s.runTime(100);
     s.moteOn(5);
 
-    # s.neighborDMP(6);
-    # s.runTime(100);
-    # s.moteOn(100);
+    s.neighborDMP(6);
+    s.runTime(100);
+    s.moteOn(5);
 
-    # s.neighborDMP(7);
-    # s.runTime(100);
-    # s.moteOn(100);
+    s.neighborDMP(7);
+    s.runTime(100);
+    s.moteOn(5);
 
-    # s.neighborDMP(8);
-    # s.runTime(100);
-    # s.moteOn(100);
+    s.neighborDMP(8);
+    s.runTime(100);
+    s.moteOn(5);
 
-    # s.neighborDMP(9);
-    # s.runTime(100);
-    # s.moteOn(100);
+    s.neighborDMP(9);
+    s.runTime(100);
+    s.moteOn(5);
 
-    # s.neighborDMP(10);
-    # s.runTime(100);
-    # s.moteOn(100);
+    s.neighborDMP(10);
+    s.runTime(100);
+    s.moteOn(5);
 
-    # s.neighborDMP(11);
-    # s.runTime(100);
-    # s.moteOn(100);
+    s.neighborDMP(11);
+    s.runTime(100);
+    s.moteOn(5);
 
-    # s.neighborDMP(12);
-    # s.runTime(100);
-    # s.moteOn(100);
+    s.neighborDMP(12);
+    s.runTime(100);
+    s.moteOn(5);
 
-    # s.neighborDMP(13);
-    # s.runTime(100);
-    # s.moteOn(100);
+    s.neighborDMP(13);
+    s.runTime(100);
+    s.moteOn(5);
 
-    # s.neighborDMP(14);
-    # s.runTime(100);
-    # s.moteOn(100);
+    s.neighborDMP(14);
+    s.runTime(100);
+    s.moteOn(5);
 
-    # s.neighborDMP(1100);
-    # s.runTime(100);
-    # s.moteOn(100);
+    s.neighborDMP(1100);
+    s.runTime(100);
+    s.moteOn(5);
 
-    # s.neighborDMP(16);
-    # s.runTime(100);
-    # s.moteOn(100);
+    s.neighborDMP(16);
+    s.runTime(100);
+    s.moteOn(5);
 
-    # s.neighborDMP(17);
-    # s.runTime(100);
-    # s.moteOn(100);
+    s.neighborDMP(17);
+    s.runTime(100);
+    s.moteOn(5);
 
-    # s.neighborDMP(18);
-    # s.runTime(100);
-    # s.moteOn(100);
+    s.neighborDMP(18);
+    s.runTime(100);
+    s.moteOn(5);
 
-    # s.neighborDMP(19);
-    # s.runTime(100);
-    # s.moteOn(100);
+    s.neighborDMP(19);
+    s.runTime(100);
+    s.moteOn(5);
 
     s.ping(1, 5, "test");
     s.runTime(1000);
@@ -129,84 +129,140 @@ def main():
     s.runTime(100);
     s.moteOn(5);
 
-    # s.routeDMP(6);
-    # s.runTime(100);
-    # s.moteOn(5);
+    s.routeDMP(6);
+    s.runTime(100);
+    s.moteOn(5);
 
-    # s.routeDMP(7);
-    # s.runTime(100);
-    # s.moteOn(5);
+    s.routeDMP(7);
+    s.runTime(100);
+    s.moteOn(5);
 
-    # s.routeDMP(8);
-    # s.runTime(100);
-    # s.moteOn(5);
+    s.routeDMP(8);
+    s.runTime(100);
+    s.moteOn(5);
 
-    # s.routeDMP(9);
-    # s.runTime(100);
-    # s.moteOn(5);
+    s.routeDMP(9);
+    s.runTime(100);
+    s.moteOn(5);
 
-    # s.routeDMP(10);
-    # s.runTime(100);
-    # s.moteOn(5);
+    s.routeDMP(10);
+    s.runTime(100);
+    s.moteOn(5);
 
-    # s.routeDMP(11);
-    # s.runTime(100);
-    # s.moteOn(5);
+    s.routeDMP(11);
+    s.runTime(100);
+    s.moteOn(5);
 
-    # s.routeDMP(12);
-    # s.runTime(100);
-    # s.moteOn(5);
+    s.routeDMP(12);
+    s.runTime(100);
+    s.moteOn(5);
 
-    # s.routeDMP(13);
-    # s.runTime(100);
-    # s.moteOn(5);
+    s.routeDMP(13);
+    s.runTime(100);
+    s.moteOn(5);
 
-    # s.routeDMP(14);
-    # s.runTime(100);
-    # s.moteOn(5);
+    s.routeDMP(14);
+    s.runTime(100);
+    s.moteOn(5);
 
-    # s.routeDMP(15);
-    # s.runTime(100);
-    # s.moteOn(5);
+    s.routeDMP(15);
+    s.runTime(100);
+    s.moteOn(5);
 
-    # s.routeDMP(16);
-    # s.runTime(100);
-    # s.moteOn(5);
+    s.routeDMP(16);
+    s.runTime(100);
+    s.moteOn(5);
 
-    # s.routeDMP(17);
-    # s.runTime(100);
-    # s.moteOn(5);
+    s.routeDMP(17);
+    s.runTime(100);
+    s.moteOn(5);
 
-    # s.routeDMP(18);
-    # s.runTime(100);
-    # s.moteOn(5);
+    s.routeDMP(18);
+    s.runTime(100);
+    s.moteOn(5);
 
-    # s.routeDMP(19);
-    # s.runTime(100);
-    # s.moteOn(5);
+    s.routeDMP(19);
+    s.runTime(100);
+    s.moteOn(5);
 
     s.ping(1, 5, "test");
     s.runTime(1000);
 
-    s.neighborDMP(1);
-    s.runTime(100);
-    s.moteOn(5);
+    # s.neighborDMP(1);
+    # s.runTime(100);
+    # s.moteOn(5);
 
-    s.neighborDMP(2);
-    s.runTime(100);
-    s.moteOn(5);
+    # s.neighborDMP(2);
+    # s.runTime(100);
+    # s.moteOn(5);
 
-    s.neighborDMP(3);
-    s.runTime(100);
-    s.moteOn(5);
+    # s.neighborDMP(3);
+    # s.runTime(100);
+    # s.moteOn(5);
 
-    s.neighborDMP(4);
-    s.runTime(100);
-    s.moteOn(5);
+    # s.neighborDMP(4);
+    # s.runTime(100);
+    # s.moteOn(5);
 
-    s.neighborDMP(5);
-    s.runTime(100);
-    s.moteOn(5);
+    # s.neighborDMP(5);
+    # s.runTime(100);
+    # s.moteOn(5);
+
+    # s.neighborDMP(6);
+    # s.runTime(100);
+    # s.moteOn(5);
+
+    # s.neighborDMP(7);
+    # s.runTime(100);
+    # s.moteOn(5);
+
+    # s.neighborDMP(8);
+    # s.runTime(100);
+    # s.moteOn(5);
+
+    # s.neighborDMP(9);
+    # s.runTime(100);
+    # s.moteOn(5);
+
+    # s.neighborDMP(10);
+    # s.runTime(100);
+    # s.moteOn(5);
+
+    # s.neighborDMP(11);
+    # s.runTime(100);
+    # s.moteOn(5);
+
+    # s.neighborDMP(12);
+    # s.runTime(100);
+    # s.moteOn(5);
+
+    # s.neighborDMP(13);
+    # s.runTime(100);
+    # s.moteOn(5);
+
+    # s.neighborDMP(14);
+    # s.runTime(100);
+    # s.moteOn(5);
+
+    # s.neighborDMP(15);
+    # s.runTime(100);
+    # s.moteOn(5);
+
+    # s.neighborDMP(16);
+    # s.runTime(100);
+    # s.moteOn(5);
+
+    # s.neighborDMP(17);
+    # s.runTime(100);
+    # s.moteOn(5);
+
+    # s.neighborDMP(18);
+    # s.runTime(100);
+    # s.moteOn(5);
+
+    # s.neighborDMP(19);
+    # s.runTime(100);
+    # s.moteOn(5);
 
 
     s.ping(1,5, "test");
@@ -229,6 +285,62 @@ def main():
     s.moteOn(5);
 
     s.routeDMP(5);
+    s.runTime(100);
+    s.moteOn(5);
+
+    s.routeDMP(6);
+    s.runTime(100);
+    s.moteOn(5);
+
+    s.routeDMP(7);
+    s.runTime(100);
+    s.moteOn(5);
+
+    s.routeDMP(8);
+    s.runTime(100);
+    s.moteOn(5);
+
+    s.routeDMP(9);
+    s.runTime(100);
+    s.moteOn(5);
+
+    s.routeDMP(10);
+    s.runTime(100);
+    s.moteOn(5);
+
+    s.routeDMP(11);
+    s.runTime(100);
+    s.moteOn(5);
+
+    s.routeDMP(12);
+    s.runTime(100);
+    s.moteOn(5);
+
+    s.routeDMP(13);
+    s.runTime(100);
+    s.moteOn(5);
+
+    s.routeDMP(14);
+    s.runTime(100);
+    s.moteOn(5);
+
+    s.routeDMP(15);
+    s.runTime(100);
+    s.moteOn(5);
+
+    s.routeDMP(16);
+    s.runTime(100);
+    s.moteOn(5);
+
+    s.routeDMP(17);
+    s.runTime(100);
+    s.moteOn(5);
+
+    s.routeDMP(18);
+    s.runTime(100);
+    s.moteOn(5);
+
+    s.routeDMP(19);
     s.runTime(100);
     s.moteOn(5);
 

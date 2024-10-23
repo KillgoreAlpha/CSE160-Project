@@ -76,30 +76,27 @@ implementation{
          myProtocol = myMsg->protocol;
          // Do checks for TTL
          switch(myProtocol){
-            case(PROTOCOL_PING):
-               // Reply to Ping
-               // call NeighborDiscovery.reply(myMsg);
-               break;
-            case(PROTOCOL_PINGREPLY):
-               // Acknowlege Ping Reply
-               // call NeighborDiscovery.reply(myMsg);
-               break;
             case(PROTOCOL_NEIGHBOR):
-               // Reply to Neighbor
-               call NeighborDiscovery.reply(myMsg);
-               break;
+                // Reply to Neighbor
+                call NeighborDiscovery.reply(myMsg);
+                break;
+                
             case(PROTOCOL_NEIGHBOR_REPLY):
-               // Read neighbor reply
-               call NeighborDiscovery.readDiscovery(myMsg);
-               break;
+                // Read neighbor reply
+                call NeighborDiscovery.readDiscovery(myMsg);
+                break;
+                
             case(PROTOCOL_FLOOD):
-               // Read neighbor reply
-               call Flooding.forwardFlood(myMsg);
-               break;
+                // Handle regular flood packets
+                call Flooding.forwardFlood(myMsg);
+                break;
+                
             case(PROTOCOL_LINKSTATE):
-               // Update link state and flood
-               call LinkStateRouting.handleLinkState(myMsg);
-               break;
+                // First process the link state update
+                call LinkStateRouting.handleLinkState(myMsg);
+                // Let the flooding module handle forwarding decisions
+                call Flooding.forwardFlood(myMsg);
+                break;
          }
          return msg;
       }

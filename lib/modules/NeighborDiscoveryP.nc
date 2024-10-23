@@ -46,19 +46,28 @@ implementation {
         // dbg(NEIGHBOR_CHANNEL, "NEIGHBOR DISCOVERY SENT FROM NODE %hhu \n", TOS_NODE_ID);
 
         for (i = 0; i < neighborCount; i++) {
-            if ((sequenceNumber - neighbors[i].lastHeard) > 1) {
-               neighbors[i].linkQuality = getLinkQuality(neighbors[i].id, 0.0, neighbors[i].linkQuality);
-            }
-
-            if ((sequenceNumber - neighbors[i].lastHeard) > INACTIVE_THRESHOLD && neighbors[i].isActive == TRUE) {
-                neighbors[i].isActive = FALSE;
-                // NEW: Notify LinkStateRouting about lost neighbor
-                call LinkStateRouting.handleNeighborLost(neighbors[i].id);
+        float oldQuality = neighbors[i].linkQuality;
+        float newQuality;
+        
+        if ((sequenceNumber - neighbors[i].lastHeard) > 1) {
+            newQuality = getLinkQuality(neighbors[i].id, 0.0, oldQuality);
+            
+            // Only update if quality change is significant
+            if (fabs(newQuality - oldQuality) > NEIGHBOR_QUALITY_THRESHOLD) {
+                neighbors[i].linkQuality = newQuality;
+                call LinkStateRouting.handleNeighborFound(neighbors[i].id, newQuality);
             }
         }
 
-        sequenceNumber++;
+        if ((sequenceNumber - neighbors[i].lastHeard) > INACTIVE_THRESHOLD && 
+            neighbors[i].isActive == TRUE) {
+            neighbors[i].isActive = FALSE;
+            call LinkStateRouting.handleNeighborLost(neighbors[i].id);
+        }
     }
+
+    sequenceNumber++;
+}
 
     command void NeighborDiscovery.reply(pack* NEIGHBOR_DISCOVERY_PACKET) {
         uint8_t payload[] = {};
@@ -90,14 +99,24 @@ implementation {
         uint16_t neighborId = NEIGHBOR_REPLY_PACKET->src;
         uint8_t i;
         bool found = FALSE;
+        float oldQuality, newQuality;
         
-        // dbg(NEIGHBOR_CHANNEL, "NEIGHBOR REPLY RECEIVED BY NODE %hhu FROM NODE %hhu \n", TOS_NODE_ID, NEIGHBOR_REPLY_PACKET->src);
-
         for (i = 0; i < neighborCount; i++) {
             if (neighbors[i].id == neighborId) {
+                oldQuality = neighbors[i].linkQuality;
                 neighbors[i].lastHeard = sequenceNumber;
                 neighbors[i].isActive = TRUE;
-                neighbors[i].linkQuality = getLinkQuality(neighborId, 1.0, neighbors[i].linkQuality);
+                
+                // Calculate new quality
+                newQuality = getLinkQuality(neighborId, 1.0, oldQuality);
+                
+                // Only update if quality change is significant
+                if (fabs(newQuality - oldQuality) > NEIGHBOR_QUALITY_THRESHOLD) {
+                    neighbors[i].linkQuality = newQuality;
+                    // Notify LinkStateRouting about significant quality change
+                    call LinkStateRouting.handleNeighborFound(neighborId, newQuality);
+                }
+                
                 found = TRUE;
                 break;
             }
@@ -108,8 +127,8 @@ implementation {
             neighbors[neighborCount].lastHeard = sequenceNumber;
             neighbors[neighborCount].linkQuality = 1.0;
             neighborCount++;
-            // NEW: Notify LinkStateRouting about new neighbor
-            call LinkStateRouting.handleNeighborFound();
+            // Always notify about new neighbors
+            call LinkStateRouting.handleNeighborFound(neighborId, 1.0);
         }
     }
 
