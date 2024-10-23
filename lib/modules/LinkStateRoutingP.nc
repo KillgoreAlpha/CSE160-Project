@@ -36,7 +36,6 @@ typedef struct {
     uint16_t numRoutes = 0;
     uint16_t sequenceNum = 0;
     pack routePack;
-    bool hasTopologyChanges = FALSE;
     uint16_t lastSentLinkStateSeq = 0;
     bool pendingUpdate = FALSE;
 
