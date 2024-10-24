@@ -15,6 +15,8 @@
 // Link State Constants
 #define LINK_STATE_MAX_ROUTES 256
 #define LINK_STATE_MAX_COST 256
+#define MIN_VALID_COST 1.0
+#define MAX_VALID_COST 3.0
 #define LINK_STATE_TTL 16
 #define QUALITY_CHANGE_THRESHOLD 0.1
 
