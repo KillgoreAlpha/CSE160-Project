@@ -49,6 +49,7 @@ typedef struct {
     void dijkstra();
     float validateCost(float cost);
     float validateLinkQuality(float quality);
+    void debugLinkState();
 
 
     command error_t LinkStateRouting.start() {
@@ -203,35 +204,42 @@ typedef struct {
         return 1.0 + (1.0 - validQuality);
     }
 
+    void debugLinkState() {
+        uint16_t i, j;
+        dbg(ROUTING_CHANNEL, "Current Link State for Node %d:\n", TOS_NODE_ID);
+        for (i = 1; i < MAX_NODES; i++) {
+            for (j = 1; j < MAX_NODES; j++) {
+                if (linkState[i][j] != LINK_STATE_MAX_COST) {
+                    dbg(ROUTING_CHANNEL, "  %d->%d: %.2f\n", i, j, linkState[i][j]);
+                }
+            }
+        }
+    }
+
     void dijkstra() {
         uint16_t i, j;
-        uint8_t current;
-        float minDist;
-        float linkCost;
-        float newDist;
-        uint8_t hopCount;
-        uint8_t nextHop;
         float dist[MAX_NODES];
         uint8_t prev[MAX_NODES];
         bool visited[MAX_NODES];
-        uint8_t pathLength[MAX_NODES];
         
         // Initialize arrays
         for (i = 0; i < MAX_NODES; i++) {
             dist[i] = LINK_STATE_MAX_COST;
             prev[i] = 0;
             visited[i] = FALSE;
-            pathLength[i] = 0;
         }
         
         dist[TOS_NODE_ID] = 0;
         prev[TOS_NODE_ID] = TOS_NODE_ID;
         
+        debugLinkState();  // Debug current link state
+        
+        // Main Dijkstra loop
         for (i = 0; i < MAX_NODES; i++) {
-            current = 0;
-            minDist = LINK_STATE_MAX_COST;
+            uint8_t current = 0;
+            float minDist = LINK_STATE_MAX_COST;
             
-            // Find unvisited node with minimum distance
+            // Find closest unvisited node
             for (j = 1; j < MAX_NODES; j++) {
                 if (!visited[j] && dist[j] < minDist) {
                     minDist = dist[j];
@@ -245,25 +253,17 @@ typedef struct {
             
             // Update distances through current node
             for (j = 1; j < MAX_NODES; j++) {
-                if (visited[j]) continue;  // Skip visited nodes
-                
-                linkCost = linkState[current][j];
-                if (linkCost == LINK_STATE_MAX_COST) continue;  // Skip unreachable nodes
-                
-                // Validate link cost
-                if (linkCost < 1.0 || linkCost > 2.0) {
-                    dbg(ROUTING_CHANNEL, "Invalid link cost detected: %.2f between %d and %d\n",
-                        linkCost, current, j);
-                    continue;
-                }
-                
-                newDist = dist[current] + linkCost;
-                
-                // Check for shorter path and prevent loops
-                if (newDist < dist[j] && pathLength[current] < MAX_NODES - 1) {
-                    dist[j] = newDist;
-                    prev[j] = current;
-                    pathLength[j] = pathLength[current] + 1;
+                float linkCost = linkState[current][j];
+                if (!visited[j] && linkCost != LINK_STATE_MAX_COST) {
+                    float newDist = dist[current] + linkCost;
+                    
+                    dbg(ROUTING_CHANNEL, "Node %d: Considering path to %d through %d, cost %.2f + %.2f = %.2f (current best: %.2f)\n",
+                        TOS_NODE_ID, j, current, dist[current], linkCost, newDist, dist[j]);
+                        
+                    if (newDist < dist[j]) {
+                        dist[j] = newDist;
+                        prev[j] = current;
+                    }
                 }
             }
         }
@@ -278,40 +278,40 @@ typedef struct {
             }
             
             if (dist[i] != LINK_STATE_MAX_COST) {
-                current = i;
-                nextHop = 0;
-                hopCount = 0;
+                uint8_t current = i;
+                uint8_t nextHop = i;
+                bool validPath = TRUE;
+                uint8_t hopCount = 0;
                 
-                while (prev[current] != TOS_NODE_ID && hopCount < MAX_NODES) {
-                    nextHop = current;
-                    current = prev[current];
-                    hopCount++;
-                    
-                    if (hopCount >= MAX_NODES) {
-                        dbg(ROUTING_CHANNEL, "Loop detected in path to node %d\n", i);
-                        nextHop = 0;
+                // Trace back to find first hop
+                while (prev[current] != TOS_NODE_ID) {
+                    if (hopCount++ > MAX_NODES || prev[current] == 0) {
+                        validPath = FALSE;
                         break;
                     }
+                    nextHop = current;
+                    current = prev[current];
                 }
                 
-                if (nextHop != 0 && hopCount < MAX_NODES) {
+                if (validPath && linkState[TOS_NODE_ID][nextHop] != LINK_STATE_MAX_COST) {
                     routingTable[i].nextHop = nextHop;
                     routingTable[i].cost = dist[i];
                     numRoutes++;
+                    
+                    dbg(ROUTING_CHANNEL, "Node %d: Added route to %d via %d with cost %.2f\n",
+                        TOS_NODE_ID, i, nextHop, dist[i]);
                 }
             }
         }
     }
 
     command void LinkStateRouting.printRouteTable() {
-        uint16_t i;
-        uint8_t current;
-        uint16_t j;
-        bool foundNext;
-        bool validPath;
-        uint8_t pathLength;
+        uint16_t i, j;
         char pathString[128];
         uint8_t pathNodes[MAX_NODES];
+        uint8_t pathLength, current;
+        bool validPath;
+        float totalCost;
         
         dbg(ROUTING_CHANNEL, "===========================================\n");
         dbg(ROUTING_CHANNEL, "Routing Table for Node %d\n", TOS_NODE_ID);
@@ -322,36 +322,43 @@ typedef struct {
         for (i = 1; i < MAX_NODES; i++) {
             if (routingTable[i].cost != LINK_STATE_MAX_COST) {
                 current = i;
+                totalCost = 0;
                 pathLength = 0;
                 validPath = TRUE;
                 
+                // Start with source
                 pathNodes[pathLength++] = TOS_NODE_ID;
                 
+                // Build path by following next hops
                 while (current != TOS_NODE_ID && pathLength < MAX_NODES) {
+                    uint8_t next = 0;
+                    float minCost = LINK_STATE_MAX_COST;
+                    
                     pathNodes[pathLength++] = current;
-                    foundNext = FALSE;
                     
                     // Find next hop towards source
                     for (j = 1; j < MAX_NODES; j++) {
                         if (linkState[current][j] != LINK_STATE_MAX_COST && 
-                            linkState[current][j] <= routingTable[i].cost) {
-                            current = j;
-                            foundNext = TRUE;
-                            break;
+                            routingTable[j].cost < minCost) {
+                            minCost = routingTable[j].cost;
+                            next = j;
                         }
                     }
                     
-                    if (!foundNext) {
+                    if (next == 0 || next == current) {
                         validPath = FALSE;
                         break;
                     }
+                    
+                    totalCost += linkState[current][next];
+                    current = next;
                 }
                 
                 if (validPath && pathLength < MAX_NODES) {
                     // Build path string
-                    sprintf(pathString, "%d", pathNodes[0]);
-                    for (current = 1; current < pathLength; current++) {
-                        sprintf(pathString + strlen(pathString), " -> %d", pathNodes[current]);
+                    sprintf(pathString, "%d", TOS_NODE_ID);
+                    for (j = 1; j < pathLength; j++) {
+                        sprintf(pathString + strlen(pathString), " -> %d", pathNodes[j]);
                     }
                     
                     dbg(ROUTING_CHANNEL, "%10d | %8d | %.2f | %s\n",
