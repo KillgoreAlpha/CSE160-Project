@@ -281,25 +281,25 @@ implementation {
     uint8_t nextHop;
     uint8_t pathLen;
     uint8_t path[MAX_NODES];
-    
+
     // Initialize arrays
     for (i = 0; i < MAX_NODES; i++) {
         dist[i] = LINK_STATE_MAX_COST;
         prev[i] = 0;
         visited[i] = FALSE;
     }
-    
+
     // Distance to self is 0
     dist[TOS_NODE_ID] = 0;
     prev[TOS_NODE_ID] = TOS_NODE_ID;
-    
+
     debugLinkState();
-    
+
     // Main Dijkstra loop
     for (i = 0; i < MAX_NODES - 1; i++) {
         current = 0;
         minDist = LINK_STATE_MAX_COST;
-        
+
         // Find unvisited node with minimum distance
         for (j = 1; j < MAX_NODES; j++) {
             if (!visited[j] && dist[j] < minDist) {
@@ -307,13 +307,13 @@ implementation {
                 current = j;
             }
         }
-        
+
         if (current == 0 || minDist == LINK_STATE_MAX_COST) {
             break;  // No more reachable nodes
         }
-        
+
         visited[current] = TRUE;
-        
+
         // Update distances through current node
         for (j = 1; j < MAX_NODES; j++) {
             if (!visited[j]) {
@@ -323,7 +323,7 @@ implementation {
                     if (newDist < dist[j]) {
                         dist[j] = newDist;
                         prev[j] = current;
-                        
+
                         dbg(ROUTING_CHANNEL, "Node %d: Found better path to %d through %d with cost %.2f\n",
                             TOS_NODE_ID, j, current, newDist);
                     }
@@ -331,7 +331,7 @@ implementation {
             }
         }
     }
-    
+
     // Update routing table with computed paths
     numRoutes = 0;
     for (i = 1; i < MAX_NODES; i++) {
@@ -340,31 +340,32 @@ implementation {
             routingTable[i].cost = 0;
             continue;
         }
-        
+
         if (dist[i] < LINK_STATE_MAX_COST) {
             // Reconstruct path to find first hop
             pathLen = 0;
             current = i;
-            
+
             // Store path in reverse order
             while (current != TOS_NODE_ID && pathLen < MAX_NODES) {
                 path[pathLen++] = current;
                 current = prev[current];
             }
-            
+
             if (pathLen < MAX_NODES && current == TOS_NODE_ID) {
                 // Last element in path array is the next hop
                 nextHop = path[pathLen - 1];
-                
-                if (linkState[TOS_NODE_ID][nextHop] < LINK_STATE_MAX_COST) {
+
+                // Check if the next hop is a direct neighbor
+                if (isDirectNeighbor(nextHop)) {
                     routingTable[i].nextHop = nextHop;
                     routingTable[i].cost = dist[i];
                     numRoutes++;
-                    
+
                     // Debug output for path
                     dbg(ROUTING_CHANNEL, "Node %d: Route to %d via %d, cost=%.2f, path: %d",
                         TOS_NODE_ID, i, nextHop, dist[i], TOS_NODE_ID);
-                    
+
                     for (j = pathLen - 1; j >= 0; j--) {
                         dbg_clear(ROUTING_CHANNEL, " -> %d", path[j]);
                     }
@@ -382,10 +383,10 @@ implementation {
             routingTable[i].cost = LINK_STATE_MAX_COST;
         }
     }
-    
+
     dbg(ROUTING_CHANNEL, "Node %d: Dijkstra complete, found %d routes\n", 
         TOS_NODE_ID, numRoutes);    
-}   
+}
 
     command void LinkStateRouting.printRouteTable() {
         uint16_t i, j;
