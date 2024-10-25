@@ -2,35 +2,43 @@
 #include "includes/CommandMsg.h"
 #include "includes/packet.h"
 
+module Node {
+    uses interface Boot;
+    uses interface SplitControl as AMControl;
+    uses interface Receive;
+    uses interface SimpleSend as Sender;
+    uses interface CommandHandler;
+    uses interface Transport;
+    uses interface NeighborDiscovery;
+    uses interface Flooding;
+    uses interface LinkStateRouting;
+}
+
 configuration NodeC {
 }
 implementation {
     components MainC;
-    components Node;
+    components new NodeC() as Node;  // Create new instance
     components new AMReceiverC(AM_PACK) as GeneralReceive;
+    components new AMSenderC(AM_PACK) as AMSend;
+    components ActiveMessageC;
+    components CommandHandlerC;
+    components FloodingC;
+    components NeighborDiscoveryC;
+    components LinkStateRoutingC;
+    components TransportC;
 
+    // Wire the components
     Node -> MainC.Boot;
     Node.Receive -> GeneralReceive;
-
-    components ActiveMessageC;
     Node.AMControl -> ActiveMessageC;
-
-    components new SimpleSendC(AM_PACK);
-    Node.Sender -> SimpleSendC;
-
-    components CommandHandlerC;
+    Node.Sender -> AMSend;
     Node.CommandHandler -> CommandHandlerC;
-
-    components new MatrixC(uint16_t, uint16_t, 20, 20) as PacketsReceived;  // Added both size parameters
-    Node.PacketsReceived -> PacketsReceived;
-
-    components FloodingC;
     Node.Flooding -> FloodingC;
-
-    components NeighborDiscoveryC;
     Node.NeighborDiscovery -> NeighborDiscoveryC;
-
-    components LinkStateRoutingC;
     Node.LinkStateRouting -> LinkStateRoutingC;
-    FloodingC.LinkStateRouting -> LinkStateRoutingC;  // Add this connection
+    Node.Transport -> TransportC;
+    
+    // Wire FloodingC 
+    FloodingC.LinkStateRouting -> LinkStateRoutingC;
 }

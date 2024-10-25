@@ -14,9 +14,8 @@ implementation {
     components new SimpleSendC(AM_PACK);
     LinkStateRoutingP.Sender -> SimpleSendC;
 
-    components new MatrixC(uint16_t, uint16_t, LINK_STATE_MAX_ROUTES, LINK_STATE_MAX_ROUTES) as PacketsReceived;
-    LinkStateRoutingP.PacketsReceived -> PacketsReceived;
-
+    components new MatrixC(uint16_t, uint16_t, LINK_STATE_MAX_ROUTES, LINK_STATE_MAX_ROUTES) as LSRoutingMatrix;  // Changed name
+    LinkStateRoutingP.PacketsReceived -> LSRoutingMatrix;
 
     components NeighborDiscoveryC;
     LinkStateRoutingP.NeighborDiscovery -> NeighborDiscoveryC;    
@@ -29,6 +28,4 @@ implementation {
 
     components RandomC as Random;
     LinkStateRoutingP.Random -> Random;
-
-   
 }
