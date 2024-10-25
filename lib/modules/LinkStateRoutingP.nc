@@ -272,111 +272,120 @@ implementation {
     }
 
     void dijkstra() {
-        uint16_t i, j;
-        uint8_t current;
-        float minDist;
-        float linkCost;
-        float newDist;
-        float dist[MAX_NODES];
-        uint8_t prev[MAX_NODES];
-        bool visited[MAX_NODES];
-        uint8_t hopCount;
-        uint8_t nextHop;
+    uint16_t i, j;
+    uint8_t current;
+    float minDist;
+    float dist[MAX_NODES];
+    uint8_t prev[MAX_NODES];
+    bool visited[MAX_NODES];
+    uint8_t nextHop;
+    uint8_t pathLen;
+    uint8_t path[MAX_NODES];
+    
+    // Initialize arrays
+    for (i = 0; i < MAX_NODES; i++) {
+        dist[i] = LINK_STATE_MAX_COST;
+        prev[i] = 0;
+        visited[i] = FALSE;
+    }
+    
+    // Distance to self is 0
+    dist[TOS_NODE_ID] = 0;
+    prev[TOS_NODE_ID] = TOS_NODE_ID;
+    
+    debugLinkState();
+    
+    // Main Dijkstra loop
+    for (i = 0; i < MAX_NODES - 1; i++) {
+        current = 0;
+        minDist = LINK_STATE_MAX_COST;
         
-        // Initialize arrays
-        for (i = 0; i < MAX_NODES; i++) {
-            dist[i] = LINK_STATE_MAX_COST;
-            prev[i] = 0;
-            visited[i] = FALSE;
-        }
-        
-        // Distance to self is 0
-        dist[TOS_NODE_ID] = 0;
-        prev[TOS_NODE_ID] = TOS_NODE_ID;
-        
-        debugLinkState();
-        
-        // Main Dijkstra loop
-        for (i = 0; i < MAX_NODES; i++) {
-            current = 0;
-            minDist = LINK_STATE_MAX_COST;
-            
-            // Find unvisited node with minimum distance
-            for (j = 1; j < MAX_NODES; j++) {
-                if (!visited[j] && dist[j] < minDist) {
-                    minDist = dist[j];
-                    current = j;
-                }
-            }
-            
-            if (current == 0) break;  // No more reachable nodes
-            
-            visited[current] = TRUE;
-            
-            // Update distances through current node
-            for (j = 1; j < MAX_NODES; j++) {
-                if (visited[j]) continue;
-                
-                linkCost = linkState[current][j];
-                if (linkCost == LINK_STATE_MAX_COST) continue;
-                
-                newDist = dist[current] + linkCost;
-                
-                if (newDist < dist[j]) {
-                    dist[j] = newDist;
-                    prev[j] = current;
-                    
-                    dbg(ROUTING_CHANNEL, "Node %d: Found path to %d through %d with cost %.2f\n",
-                        TOS_NODE_ID, j, current, newDist);
-                }
+        // Find unvisited node with minimum distance
+        for (j = 1; j < MAX_NODES; j++) {
+            if (!visited[j] && dist[j] < minDist) {
+                minDist = dist[j];
+                current = j;
             }
         }
         
-        // Update routing table
-        numRoutes = 0;
-        for (i = 1; i < MAX_NODES; i++) {
-            if (i == TOS_NODE_ID) {
-                routingTable[i].nextHop = TOS_NODE_ID;
-                routingTable[i].cost = 0;
-                continue;
-            }
-            
-            if (dist[i] != LINK_STATE_MAX_COST) {
-                // Trace back through prev[] to find first hop
-                current = i;
-                nextHop = 0;
-                hopCount = 0;
-                
-                while (prev[current] != TOS_NODE_ID && hopCount < MAX_NODES) {
-                    nextHop = current;
-                    current = prev[current];
-                    hopCount++;
-                }
-                
-                // If we reached the source node and found a valid next hop
-                if (prev[current] == TOS_NODE_ID && linkState[TOS_NODE_ID][current] != LINK_STATE_MAX_COST) {
-                    nextHop = current;  // Use the direct neighbor as next hop
-                    routingTable[i].nextHop = nextHop;
-                    routingTable[i].cost = dist[i];
-                    numRoutes++;
-                    
-                    // Debug path
-                    dbg(ROUTING_CHANNEL, "Node %d: Route to %d via %d, cost=%.2f, path: ",
-                        TOS_NODE_ID, i, nextHop, dist[i]);
+        if (current == 0 || minDist == LINK_STATE_MAX_COST) {
+            break;  // No more reachable nodes
+        }
+        
+        visited[current] = TRUE;
+        
+        // Update distances through current node
+        for (j = 1; j < MAX_NODES; j++) {
+            if (!visited[j]) {
+                float linkCost = linkState[current][j];
+                if (linkCost < LINK_STATE_MAX_COST) {
+                    float newDist = dist[current] + linkCost;
+                    if (newDist < dist[j]) {
+                        dist[j] = newDist;
+                        prev[j] = current;
                         
-                    current = i;
-                    while (current != TOS_NODE_ID) {
-                        dbg_clear(ROUTING_CHANNEL, "%d <- ", current);
-                        current = prev[current];
+                        dbg(ROUTING_CHANNEL, "Node %d: Found better path to %d through %d with cost %.2f\n",
+                            TOS_NODE_ID, j, current, newDist);
                     }
-                    dbg_clear(ROUTING_CHANNEL, "%d\n", TOS_NODE_ID);
-                } else {
-                    routingTable[i].nextHop = 0;
-                    routingTable[i].cost = LINK_STATE_MAX_COST;
                 }
             }
         }
     }
+    
+    // Update routing table with computed paths
+    numRoutes = 0;
+    for (i = 1; i < MAX_NODES; i++) {
+        if (i == TOS_NODE_ID) {
+            routingTable[i].nextHop = TOS_NODE_ID;
+            routingTable[i].cost = 0;
+            continue;
+        }
+        
+        if (dist[i] < LINK_STATE_MAX_COST) {
+            // Reconstruct path to find first hop
+            pathLen = 0;
+            current = i;
+            
+            // Store path in reverse order
+            while (current != TOS_NODE_ID && pathLen < MAX_NODES) {
+                path[pathLen++] = current;
+                current = prev[current];
+            }
+            
+            if (pathLen < MAX_NODES && current == TOS_NODE_ID) {
+                // Last element in path array is the next hop
+                nextHop = path[pathLen - 1];
+                
+                if (linkState[TOS_NODE_ID][nextHop] < LINK_STATE_MAX_COST) {
+                    routingTable[i].nextHop = nextHop;
+                    routingTable[i].cost = dist[i];
+                    numRoutes++;
+                    
+                    // Debug output for path
+                    dbg(ROUTING_CHANNEL, "Node %d: Route to %d via %d, cost=%.2f, path: %d",
+                        TOS_NODE_ID, i, nextHop, dist[i], TOS_NODE_ID);
+                    
+                    for (j = pathLen - 1; j >= 0; j--) {
+                        dbg_clear(ROUTING_CHANNEL, " -> %d", path[j]);
+                    }
+                    dbg_clear(ROUTING_CHANNEL, "\n");
+                } else {
+                    routingTable[i].nextHop = 0;
+                    routingTable[i].cost = LINK_STATE_MAX_COST;
+                }
+            } else {
+                routingTable[i].nextHop = 0;
+                routingTable[i].cost = LINK_STATE_MAX_COST;
+            }
+        } else {
+            routingTable[i].nextHop = 0;
+            routingTable[i].cost = LINK_STATE_MAX_COST;
+        }
+    }
+    
+    dbg(ROUTING_CHANNEL, "Node %d: Dijkstra complete, found %d routes\n", 
+        TOS_NODE_ID, numRoutes);    
+}   
 
     command void LinkStateRouting.printRouteTable() {
         uint16_t i, j;
