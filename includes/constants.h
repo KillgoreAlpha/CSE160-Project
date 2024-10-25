@@ -10,7 +10,6 @@
 #define NEIGHBOR_QUALITY_THRESHOLD 0.1
 #define INACTIVE_THRESHOLD 3
 #define MTU 1500
-#define MAX_TTL 32
 
 // Link State Constants
 #define LINK_STATE_MAX_ROUTES 256

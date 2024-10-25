@@ -21,7 +21,7 @@ implementation {
     components CommandHandlerC;
     Node.CommandHandler -> CommandHandlerC;
 
-    components new MatrixC(uint16_t, uint16_t, 20) as PacketsReceived;
+    components new MatrixC(uint16_t, uint16_t, 20, 20) as PacketsReceived;  // Added both size parameters
     Node.PacketsReceived -> PacketsReceived;
 
     components FloodingC;
