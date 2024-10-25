@@ -20,5 +20,9 @@
 #define LINK_STATE_TTL 16
 #define QUALITY_CHANGE_THRESHOLD 0.1
 
+#define PROTOCOL_LINKSTATE 2
+#define MAX_TTL 20
+#define QUALITY_THRESHOLD 0.1
 
 #endif /* CONSTANTS_H */
+
