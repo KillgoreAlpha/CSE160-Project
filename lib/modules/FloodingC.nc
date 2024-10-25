@@ -1,14 +1,17 @@
 configuration FloodingC {
-   provides interface Flooding;
+    provides interface Flooding;
+    uses interface LinkStateRouting;
 }
 
 implementation {
-   components FloodingP;
-   Flooding = FloodingP.Flooding;
-
-   components new SimpleSendC(AM_PACK);
-   FloodingP.SimpleSend -> SimpleSendC;
-
-   components new HashmapC(uint16_t, 64) as SeenPacketsC;
-   FloodingP.SeenPackets -> SeenPacketsC;
+    components FloodingP;
+    components SimpleSendC;
+    components new HashmapC(uint16_t, 20) as SeenPackets;
+    
+    Flooding = FloodingP.Flooding;
+    
+    FloodingP.Packet -> SimpleSendC;
+    FloodingP.SimpleSend -> SimpleSendC;
+    FloodingP.SeenPackets -> SeenPackets;
+    FloodingP.LinkStateRouting = LinkStateRouting;
 }
