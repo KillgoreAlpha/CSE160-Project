@@ -296,7 +296,7 @@ implementation {
     debugLinkState();
 
     // Main Dijkstra loop
-    for (i = 0; i < MAX_NODES - 1; i++) {
+    for (i = 0; i < MAX_NODES; i++) {
         current = 0;
         minDist = LINK_STATE_MAX_COST;
 
@@ -308,7 +308,7 @@ implementation {
             }
         }
 
-        if (current == 0 || minDist == LINK_STATE_MAX_COST) {
+        if (current == 0) {
             break;  // No more reachable nodes
         }
 
@@ -346,39 +346,38 @@ implementation {
             pathLen = 0;
             current = i;
 
-            // Store path in reverse order
-            while (current != TOS_NODE_ID && pathLen < MAX_NODES) {
+            while (current != TOS_NODE_ID) {
                 path[pathLen++] = current;
                 current = prev[current];
+
+                if (pathLen >= MAX_NODES) {
+                    // Path is too long, something went wrong
+                    break;
+                }
             }
 
-            if (pathLen < MAX_NODES && current == TOS_NODE_ID) {
-                // Last element in path array is the next hop
+            if (current == TOS_NODE_ID && pathLen < MAX_NODES) {
+                // Path is valid, update routing table
                 nextHop = path[pathLen - 1];
+                routingTable[i].nextHop = nextHop;
+                routingTable[i].cost = dist[i];
+                numRoutes++;
 
-                // Check if the next hop is a direct neighbor
-                if (isDirectNeighbor(nextHop)) {
-                    routingTable[i].nextHop = nextHop;
-                    routingTable[i].cost = dist[i];
-                    numRoutes++;
+                // Debug output for path
+                dbg(ROUTING_CHANNEL, "Node %d: Route to %d via %d, cost=%.2f, path: %d",
+                    TOS_NODE_ID, i, nextHop, dist[i], TOS_NODE_ID);
 
-                    // Debug output for path
-                    dbg(ROUTING_CHANNEL, "Node %d: Route to %d via %d, cost=%.2f, path: %d",
-                        TOS_NODE_ID, i, nextHop, dist[i], TOS_NODE_ID);
-
-                    for (j = pathLen - 1; j >= 0; j--) {
-                        dbg_clear(ROUTING_CHANNEL, " -> %d", path[j]);
-                    }
-                    dbg_clear(ROUTING_CHANNEL, "\n");
-                } else {
-                    routingTable[i].nextHop = 0;
-                    routingTable[i].cost = LINK_STATE_MAX_COST;
+                for (j = pathLen - 1; j >= 0; j--) {
+                    dbg_clear(ROUTING_CHANNEL, " -> %d", path[j]);
                 }
+                dbg_clear(ROUTING_CHANNEL, "\n");
             } else {
+                // Path is invalid, reset routing table entry
                 routingTable[i].nextHop = 0;
                 routingTable[i].cost = LINK_STATE_MAX_COST;
             }
         } else {
+            // No path found, reset routing table entry
             routingTable[i].nextHop = 0;
             routingTable[i].cost = LINK_STATE_MAX_COST;
         }
@@ -387,7 +386,6 @@ implementation {
     dbg(ROUTING_CHANNEL, "Node %d: Dijkstra complete, found %d routes\n", 
         TOS_NODE_ID, numRoutes);    
 }
-
     command void LinkStateRouting.printRouteTable() {
         uint16_t i, j;
         char pathString[128];
