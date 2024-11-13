@@ -215,31 +215,40 @@ implementation {
         }
 
         void validateLinkState() {
-        uint16_t i, j;
-        float maxCost;
-        for (i = 1; i < MAX_NODES; i++) {
-            for (j = 1; j < MAX_NODES; j++) {
-                // Ensure symmetry
-                if (linkState[i][j] != linkState[j][i]) {
-                    dbg(ROUTING_CHANNEL, "Warning: Asymmetric link state detected %d<->%d: %.2f != %.2f\n",
-                        i, j, linkState[i][j], linkState[j][i]);
-                    // Fix asymmetry by using the higher cost
-                    maxCost = (linkState[i][j] > linkState[j][i]) ? linkState[i][j] : linkState[j][i];
-                    linkState[i][j] = maxCost;
-                    linkState[j][i] = maxCost;
-                }
-                
-                // Ensure valid costs
-                if (linkState[i][j] != LINK_STATE_MAX_COST && 
-                    (linkState[i][j] < MIN_VALID_COST || linkState[i][j] > MAX_VALID_COST)) {
-                    dbg(ROUTING_CHANNEL, "Warning: Invalid link cost detected %d<->%d: %.2f\n",
-                        i, j, linkState[i][j]);
-                    linkState[i][j] = LINK_STATE_MAX_COST;
-                    linkState[j][i] = LINK_STATE_MAX_COST;
-                }
+    uint16_t i, j;
+    float maxCost;
+    bool stateChanged = FALSE;  // Flag to track if the link state table was modified
+
+    for (i = 1; i < MAX_NODES; i++) {
+        for (j = 1; j < MAX_NODES; j++) {
+            // Ensure symmetry
+            if (linkState[i][j] != linkState[j][i]) {
+                dbg(ROUTING_CHANNEL, "Warning: Asymmetric link state detected %d<->%d: %.2f != %.2f\n",
+                    i, j, linkState[i][j], linkState[j][i]);
+                // Fix asymmetry by using the higher cost
+                maxCost = (linkState[i][j] > linkState[j][i]) ? linkState[i][j] : linkState[j][i];
+                linkState[i][j] = maxCost;
+                linkState[j][i] = maxCost;
+                stateChanged = TRUE;  // Set the flag to indicate a change in link state
+            }
+            
+            // Ensure valid costs
+            if (linkState[i][j] != LINK_STATE_MAX_COST && 
+                (linkState[i][j] < MIN_VALID_COST || linkState[i][j] > MAX_VALID_COST)) {
+                dbg(ROUTING_CHANNEL, "Warning: Invalid link cost detected %d<->%d: %.2f\n",
+                    i, j, linkState[i][j]);
+                linkState[i][j] = LINK_STATE_MAX_COST;
+                linkState[j][i] = LINK_STATE_MAX_COST;
+                stateChanged = TRUE;  // Set the flag to indicate a change in link state
             }
         }
     }
+
+    // If the link state table was modified, recalculate the routing table
+    if (stateChanged) {
+        dijkstra();
+    }
+}
 
     bool isDirectNeighbor(uint16_t nodeId) {
         uint32_t* neighbors = call NeighborDiscovery.getNeighbors();
@@ -448,38 +457,32 @@ implementation {
 
 
     bool updateState(uint16_t incomingSrc) {
-        uint16_t i;
-        uint8_t neighbor;
-        float newCost;
-        bool isStateUpdated = FALSE;
+    uint16_t i;
+    uint8_t neighbor;
+    float newCost;
+    bool isStateUpdated = FALSE;
+    
+    if (incomingSrc >= MAX_NODES) return FALSE;
+    
+    for (i = 0; i < 10; i++) {
+        neighbor = incomingLinkState[i].neighbor;
+        if (neighbor == 0 || neighbor >= MAX_NODES) continue;
         
-        if (incomingSrc >= MAX_NODES) return FALSE;
-        
-        // Only process updates from direct neighbors
-        if (!isDirectNeighbor(incomingSrc)) {
-            for (i = 0; i < 10; i++) {
-                neighbor = incomingLinkState[i].neighbor;
-                if (neighbor == 0 || neighbor >= MAX_NODES) continue;
+        newCost = incomingLinkState[i].cost;
+        if (newCost >= MIN_VALID_COST && newCost <= MAX_VALID_COST) {
+            if (linkState[incomingSrc][neighbor] != newCost) {
+                linkState[incomingSrc][neighbor] = newCost;
+                linkState[neighbor][incomingSrc] = newCost;
+                isStateUpdated = TRUE;
                 
-                // For non-neighbors, we only update the link state if it's their direct neighbor
-                if (isDirectNeighbor(neighbor)) {
-                    newCost = incomingLinkState[i].cost;
-                    if (newCost >= MIN_VALID_COST && newCost <= MAX_VALID_COST) {
-                        if (linkState[incomingSrc][neighbor] != newCost) {
-                            linkState[incomingSrc][neighbor] = newCost;
-                            linkState[neighbor][incomingSrc] = newCost;
-                            isStateUpdated = TRUE;
-                            
-                            dbg(ROUTING_CHANNEL, "Updated indirect link state: %d<->%d = %.2f\n",
-                                incomingSrc, neighbor, newCost);
-                        }
-                    }
-                }
+                dbg(ROUTING_CHANNEL, "Updated link state: %d<->%d = %.2f\n",
+                    incomingSrc, neighbor, newCost);
             }
         }
-        
-        return isStateUpdated;
     }
+    
+    return isStateUpdated;
+}
 
 
     void sendLinkStatePacket(uint8_t lostNeighbor) {
